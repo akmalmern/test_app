@@ -15,12 +15,16 @@ const api = axios.create({
 //   return config;
 // });
 
-// Response interceptor (xatoliklarni boshqarish)
+// Interceptor qo'shish
 // api.interceptors.response.use(
-//   (response) => response,
+//   (response) => response, // Muvaffaqiyatli javoblarni qaytarish
 //   (error) => {
-//     toast.error(error.response.data.error);
-//     return Promise.reject(error);
+//     // Xatolikni konsolda ko'rsatmaslik
+//     const errorMessage =
+//       error.response?.data?.error ||
+//       "Xatolik yuz berdi. Iltimos, qayta urinib ko'ring.";
+//     toast.error(errorMessage);
+//     return Promise.reject(error); // Xatolikni qaytarish (agar kerak bo'lsa)
 //   }
 // );
 
