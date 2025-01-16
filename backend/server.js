@@ -4,6 +4,7 @@ require("dotenv").config();
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const dataDB = require("./db/db");
+const path = require("path");
 const userRouter = require("./routes/userRoutes");
 const adminRoutes = require("./routes/adminRoutes");
 const errorHandler = require("./middlware/error");
@@ -12,6 +13,8 @@ dataDB();
 app.use(express.json());
 app.use(cookieParser());
 
+// uploads papkasini statik fayl sifatida taqdim etish
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 // CORS sozlamalari
 app.use(
   cors({

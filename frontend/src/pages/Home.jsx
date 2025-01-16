@@ -7,8 +7,18 @@ const Home = () => {
   const navigate = useNavigate();
   const [testlar, setTests] = useState([]);
   const [message, setMessage] = useState("");
-  const [testlar_soni, setTestlarSoni] = useState("");
-
+  const [testlar_soni, setTestlarSoni] = useState(null);
+  const [profile, setUserProfile] = useState(null);
+  console.log("profile:++", profile);
+  const userProfile = async () => {
+    try {
+      const { data } = await api.get("/user-profile");
+      console.log("Profile data:", data.user);
+      setUserProfile(data.user);
+    } catch (error) {
+      toast.error(error.response.data.error);
+    }
+  };
   const allTests = async () => {
     try {
       const { data } = await api.get("/all-tests");
@@ -24,11 +34,11 @@ const Home = () => {
   };
 
   useEffect(() => {
+    userProfile();
     allTests();
   }, []);
 
   // testni boshlash tugmasi:
-  // Testni boshlash uchun ma'lumotlarni yuklash
   const handleStartTest = async (testId) => {
     try {
       const { data } = await api.get(`/start-test/${testId}`);
@@ -45,6 +55,23 @@ const Home = () => {
       );
     }
   };
+  //+++sidebar menu+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  // Sidebarni ochish yoki yopish funksiyasi
+  const toggleSidebar = () => {
+    setIsSidebarOpen((prev) => !prev);
+  };
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen((prev) => !prev);
+  };
+
+  const closeDropdown = () => {
+    setIsDropdownOpen(false);
+  };
+  // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
   return (
     <>
@@ -53,6 +80,7 @@ const Home = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center justify-start rtl:justify-end">
               <button
+                onClick={toggleSidebar}
                 data-drawer-target="logo-sidebar"
                 data-drawer-toggle="logo-sidebar"
                 aria-controls="logo-sidebar"
@@ -85,80 +113,89 @@ const Home = () => {
                 </span>
               </a>
             </div>
-            <div className="flex items-center">
+            <div className="flex items-center relative">
               <div className="flex items-center ms-3">
                 <div>
                   <button
                     type="button"
                     className="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
-                    aria-expanded="false"
-                    data-dropdown-toggle="dropdown-user"
+                    aria-expanded={isDropdownOpen}
+                    onClick={toggleDropdown}
                   >
                     <span className="sr-only">Open user menu</span>
-                    <img
-                      className="w-8 h-8 rounded-full"
-                      src="https://flowbite.com/docs/images/people/profile-picture-5.jpg"
-                      alt="user photo"
-                    />
+                    {profile && profile.image ? (
+                      <img
+                        className="w-8 h-8 rounded-full"
+                        src={`${
+                          import.meta.env.VITE_API_BASE_URL
+                        }/${profile.image.replace(/\\/g, "/")}`}
+                        alt="user photo"
+                      />
+                    ) : (
+                      <img
+                        className="w-8 h-8 rounded-full"
+                        src="https://flowbite.com/docs/images/people/profile-picture-5.jpg"
+                        alt="default photo"
+                      />
+                    )}
                   </button>
                 </div>
-                <div
-                  className="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600"
-                  id="dropdown-user"
-                >
-                  <div className="px-4 py-3" role="none">
-                    <p
-                      className="text-sm text-gray-900 dark:text-white"
-                      role="none"
-                    >
-                      Neil Sims
-                    </p>
-                    <p
-                      className="text-sm font-medium text-gray-900 truncate dark:text-gray-300"
-                      role="none"
-                    >
-                      neil.sims@flowbite.com
-                    </p>
+                {isDropdownOpen && (
+                  <div
+                    className="absolute top-full right-0 mt-2 w-48 z-50 bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600"
+                    id="dropdown-user"
+                  >
+                    <div className="px-4 py-3">
+                      <p className="text-sm text-gray-900 dark:text-white">
+                        {profile.userName}
+                      </p>
+                      <p className="text-sm font-medium text-gray-900 truncate dark:text-gray-300">
+                        {profile.email}
+                      </p>
+                    </div>
+                    <ul className="py-1">
+                      <li>
+                        <a
+                          href="#"
+                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
+                        >
+                          Dashboard
+                        </a>
+                      </li>
+                      <li>
+                        <a
+                          href="#"
+                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
+                        >
+                          Settings
+                        </a>
+                      </li>
+                      <li>
+                        <a
+                          href="#"
+                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
+                        >
+                          Earnings
+                        </a>
+                      </li>
+                      <li>
+                        <a
+                          href="#"
+                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
+                        >
+                          Sign out
+                        </a>
+                      </li>
+                    </ul>
                   </div>
-                  <ul className="py-1" role="none">
-                    <li>
-                      <a
-                        href="#"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
-                        role="menuitem"
-                      >
-                        Dashboard
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        href="#"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
-                        role="menuitem"
-                      >
-                        Settings
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        href="#"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
-                        role="menuitem"
-                      >
-                        Earnings
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        href="#"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
-                        role="menuitem"
-                      >
-                        Sign out
-                      </a>
-                    </li>
-                  </ul>
-                </div>
+                )}
+                {isDropdownOpen && (
+                  <div
+                    className="fixed inset-0 z-40"
+                    onClick={closeDropdown}
+                    aria-hidden="true"
+                  ></div>
+                )}
               </div>
             </div>
           </div>
@@ -167,7 +204,9 @@ const Home = () => {
 
       <aside
         id="logo-sidebar"
-        className="fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform -translate-x-full bg-white border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700"
+        className={`fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform ${
+          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+        } bg-white border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700`}
         aria-label="Sidebar"
       >
         <div className="h-full px-3 pb-4 overflow-y-auto bg-white dark:bg-gray-800">
@@ -187,7 +226,7 @@ const Home = () => {
                   <path d="M16.975 11H10V4.025a1 1 0 0 0-1.066-.998 8.5 8.5 0 1 0 9.039 9.039.999.999 0 0 0-1-1.066h.002Z" />
                   <path d="M12.5 0c-.157 0-.311.01-.565.027A1 1 0 0 0 11 1.02V10h8.975a1 1 0 0 0 1-.935c.013-.188.028-.374.028-.565A8.51 8.51 0 0 0 12.5 0Z" />
                 </svg>
-                <span className="ms-3">Dashboard</span>
+                <span className="ms-3">Dashbo+++++++++++++++ard</span>
               </a>
             </li>
             <li>
@@ -313,25 +352,8 @@ const Home = () => {
       <div className="p-4 sm:ml-64">
         <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14">
           <div className="grid grid-cols-3 gap-4 mb-4">
-            <div className="flex items-center justify-center h-24 rounded bg-gray-50 dark:bg-gray-800">
-              +++++++++++++
-              <p className="text-2xl text-gray-400 dark:text-gray-500">
-                <svg
-                  className="w-3.5 h-3.5"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 18 18"
-                >
-                  <path
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M9 1v16M1 9h16"
-                  />
-                </svg>
-              </p>
+            <div className="flex items-center justify-center h-24 rounded bg-gray-50 dark:bg-gray-800 ">
+              <h1 className="text-white">+++++++++++</h1>
             </div>
             <div className="flex items-center justify-center h-24 rounded bg-gray-50 dark:bg-gray-800">
               <p className="text-2xl text-gray-400 dark:text-gray-500">
