@@ -8,27 +8,32 @@ import NotFound from "./components/NotFound";
 import PrivateRoute from "./auth/PrivateRoute";
 // import SingleTest from "./components/SingleTest";
 import TestYechish from "./components/TestYechish";
+import UserTestResults from "./pages/UserTestResults";
+import Navbar from "./components/Navbar";
 
 function App() {
   return (
     <>
       <ToastContainer />
+      <Navbar />
+
       <Routes>
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
-        {/* <Route
-          path="/teststart/:testId"
-          element={
-            <PrivateRoute>
-              <SingleTest />
-            </PrivateRoute>
-          }
-        /> */}
+
         <Route
           path="/teststart/:testId"
           element={
             <PrivateRoute>
               <TestYechish />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/results"
+          element={
+            <PrivateRoute>
+              <UserTestResults />
             </PrivateRoute>
           }
         />

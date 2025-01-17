@@ -28,6 +28,7 @@ const Register = () => {
         }, 1000);
       }
     } catch (error) {
+      console.log(error);
       toast.error(
         error.response?.data?.error || "Serverda noma'lum xatolik yuz berdi"
       );
