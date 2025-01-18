@@ -28,7 +28,7 @@ const createTest = async (req, res, next) => {
     if (!title || !category || !duration || !questions) {
       return next(new ErrorResponse("Maydonlarni toliq to'ldiring", 400));
     }
-    if (test.questions.length >= 30) {
+    if (test.questions.length > 30) {
       return next(
         new ErrorResponse("Test uchun savollar soni cheklangan (30 ta)", 400)
       );
