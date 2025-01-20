@@ -17,7 +17,3 @@ const testSchema = new mongoose.Schema(
 );
 
 module.exports = mongoose.model("testModel", testSchema);
-// PORT = 5000
-// DB = mongodb://localhost:27017/test_app1
-// JWT_REFRESH_TOKEN = 0921aaaa
-// JWT_ACCESS_TOKEN = aaaa0921

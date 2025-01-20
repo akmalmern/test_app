@@ -148,6 +148,7 @@ const TestYechish = () => {
                 <h2 className="text-xl font-bold">Natija:</h2>
                 <p>Togri javoblar soni: {result.correctAnswers}</p>
                 <p>Umumiy savollar soni: {result.totalQuestions}</p>
+                <p>Umumiy savollar soni: {result.score}</p>
               </div>
             )}
           </div>

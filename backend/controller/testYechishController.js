@@ -143,14 +143,6 @@ const TestYakunlash = async (req, res, next) => {
           answer,
         }));
 
-    // // `answers` obyektini massivga aylantirish
-    // const answersArray = Object.entries(answers).map(
-    //   ([questionId, answer]) => ({
-    //     questionId,
-    //     answer,
-    //   })
-    // );
-
     // Test va foydalanuvchi natijasini topamiz
     const test = await testModel.findById(testId);
     if (!test) {
@@ -272,6 +264,9 @@ const userTestsResult = async (req, res, next) => {
       message: "Foydalanuvchi test natijalari",
       yechganTestlarSoni: results.length,
       results: results.map((result) => ({
+        score: ((result.correctAnswers / result.totalQuestions) * 100).toFixed(
+          2
+        ),
         testTitle: result.testId.title,
         category: result.testId.category,
         correctAnswers: result.correctAnswers,

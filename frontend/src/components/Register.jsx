@@ -10,6 +10,9 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [image, setImage] = useState(null);
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [isPasswordMatch, setIsPasswordMatch] = useState(true);
+  const [showPassword, setShowPassword] = useState(false); // Parol ko'rinishini boshqarish
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -18,6 +21,12 @@ const Register = () => {
     formData.append("email", email);
     formData.append("password", password);
     if (image) formData.append("image", image);
+
+    if (password !== confirmPassword) {
+      setIsPasswordMatch(false);
+      return;
+    }
+
     try {
       const { data } = await api.post("/signup", formData);
       if (data.success === true) {
@@ -33,6 +42,9 @@ const Register = () => {
         error.response?.data?.error || "Serverda noma'lum xatolik yuz berdi"
       );
     }
+  };
+  const handleConfirmPasswordBlur = () => {
+    setIsPasswordMatch(password === confirmPassword);
   };
 
   return (
@@ -81,7 +93,7 @@ const Register = () => {
                     required=""
                   />
                 </div>
-                <div>
+                <div className="relative">
                   <label
                     htmlFor="password"
                     className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -89,13 +101,46 @@ const Register = () => {
                     Password
                   </label>
                   <input
-                    type="password"
+                    type={showPassword ? "text" : "password"} // Ko'rinishni boshqarish
                     onChange={(e) => setPassword(e.target.value)}
+                    name="password"
                     id="password"
                     placeholder="••••••••"
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    required=""
+                    required
                   />
+                  <button
+                    type="button"
+                    className="absolute right-2 top-9 text-gray-600 dark:text-gray-300"
+                    onClick={() => setShowPassword((prev) => !prev)} // Toggle qilish
+                  >
+                    {showPassword ? "🙈" : "👁️"} {/* Ko'zcha emoji */}
+                  </button>
+                </div>
+                <div>
+                  <label
+                    htmlFor="confirm-password"
+                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  >
+                    Confirm Password
+                  </label>
+                  <input
+                    type="password"
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    onBlur={handleConfirmPasswordBlur} // Blurda tekshirish
+                    name="confirmPassword"
+                    id="confirm-password"
+                    placeholder="••••••••"
+                    required
+                    className={`bg-gray-50 border ${
+                      isPasswordMatch ? "border-gray-300" : "border-red-500"
+                    } text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500`}
+                  />
+                  {!isPasswordMatch && (
+                    <p className="text-sm text-red-800 mt-1">
+                      Parollar bir xil emas!
+                    </p>
+                  )}
                 </div>
                 <div>
                   <label

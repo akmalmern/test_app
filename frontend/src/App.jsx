@@ -20,31 +20,15 @@ function App() {
       <Routes>
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
+        {/* PrivateRoute orqali ichki yo'nalishlar */}
+        <Route path="/" element={<PrivateRoute />}>
+          {/* Bolalar sahifalari */}
+          <Route path="/" element={<Home />} />
+          <Route path="/teststart/:testId" element={<TestYechish />} />
+          <Route path="/results" element={<UserTestResults />} />
+          {/* <Route path="dashboard" element={<Dashboard />} /> */}
+        </Route>
 
-        <Route
-          path="/teststart/:testId"
-          element={
-            <PrivateRoute>
-              <TestYechish />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/results"
-          element={
-            <PrivateRoute>
-              <UserTestResults />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/"
-          element={
-            <PrivateRoute>
-              <Home />
-            </PrivateRoute>
-          }
-        />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </>

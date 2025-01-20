@@ -51,6 +51,7 @@ const userTestResultSchema = new mongoose.Schema(
       type: Date,
     },
     isCompleted: { type: Boolean, default: false }, // Test yakunlanganligini bildiradi
+    isTestboshlash: { type: Boolean, default: false }, // Test yakunlanganligini bildiradi
   },
   { timestamps: true } // createdAt va updatedAt avtomatik maydonlari
 );

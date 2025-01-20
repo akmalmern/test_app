@@ -7,6 +7,7 @@ const dataDB = require("./db/db");
 const path = require("path");
 const userRouter = require("./routes/userRoutes");
 const adminRoutes = require("./routes/adminRoutes");
+const categoryRoutes = require("./routes/categoryRoutes");
 const errorHandler = require("./middlware/error");
 // *****
 dataDB();
@@ -25,6 +26,7 @@ app.use(
 // *****
 app.use("/", userRouter);
 app.use("/", adminRoutes);
+app.use("/category", categoryRoutes);
 // *****
 
 app.use(errorHandler);

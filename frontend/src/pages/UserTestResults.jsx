@@ -78,6 +78,12 @@ const UserTestResults = () => {
                         </p>
                       </div>
                       <div>
+                        <p className="text-base text-white">Foizda:</p>
+                        <p className="text-xl font-bold text-white">
+                          {result.score} %
+                        </p>
+                      </div>
+                      <div>
                         <p className="text-base text-white">Savollar soni:</p>
                         <p className="text-xl font-bold text-white">
                           {result.totalQuestions} ta
@@ -86,7 +92,7 @@ const UserTestResults = () => {
                     </div>
                     <div className="text-right">
                       <p className="text-lg font-semibold text-white">
-                        Topshirgan vaqt: 14.01.2025, 02:47:01
+                        {result.completedAt}
                       </p>
                     </div>
                   </div>
