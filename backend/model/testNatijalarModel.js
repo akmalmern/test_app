@@ -1,27 +1,3 @@
-// const mongoose = require("mongoose");
-
-// const userTestResultSchema = new mongoose.Schema(
-//   {
-//     userId: {
-//       type: mongoose.Schema.Types.ObjectId,
-//       ref: "userModel",
-//       required: true,
-//     },
-//     testId: {
-//       type: mongoose.Schema.Types.ObjectId,
-//       ref: "testModel",
-//       required: true,
-//     },
-//     correctAnswers: { type: Number, required: true },
-//     totalQuestions: { type: Number, required: true },
-//     startTime: { type: Date, default: Date.now() },
-//     endTime: { type: Date },
-//     completedAt: { type: Date, default: Date.now() },
-//   },
-//   { timestamps: true }
-// );
-
-// module.exports = mongoose.model("UserTestResult", userTestResultSchema);
 const mongoose = require("mongoose");
 
 const userTestResultSchema = new mongoose.Schema(

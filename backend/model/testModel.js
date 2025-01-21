@@ -9,8 +9,13 @@ const questionSchema = new mongoose.Schema({
 const testSchema = new mongoose.Schema(
   {
     title: { type: String, required: true },
-    category: { type: String, required: true },
+    categoryId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "categoryModel",
+      required: [true, "category id ni kiritishingiz kerak"],
+    },
     duration: { type: Number, required: true },
+    savollar_soni: { type: Number, required: true },
     questions: [questionSchema],
   },
   { timestamps: true }

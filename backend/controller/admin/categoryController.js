@@ -14,7 +14,14 @@ const addCategory = async (req, res, next) => {
       category,
     });
   } catch (error) {
-    next(new ErrorResponse(error.message, 500));
+    if (error.name === "ValidationError") {
+      const errorMessages = Object.values(error.errors).map(
+        (val) => val.message
+      );
+      next(new ErrorResponse(errorMessages[0], 500));
+    } else {
+      next(new ErrorResponse(error.message, 500));
+    }
   }
 };
 

@@ -1,47 +1,37 @@
-const Test = require("../../model/testModel");
+const testModel = require("../../model/testModel");
 const ErrorResponse = require("../../utils/errorResponse");
-
-// // Test yaratish
-// exports.createTest1 = async (req, res) => {
-//   try {
-//     const { title, category, duration, questions } = req.body;
-
-//     const test = new Test({ title, category, duration, questions });
-//     if (test.questions.length >= 30) {
-//       return res
-//         .status(400)
-//         .json({ message: "Test uchun savollar soni cheklangan (30 ta)." });
-//     }
-//     await test.save();
-
-//     res.status(201).json({ message: "Test muvaffaqiyatli yaratildi", test });
-//   } catch (err) {
-//     res.status(500).json({ message: "Xatolik yuz berdi", error: err.message });
-//   }
-// };
 
 const createTest = async (req, res, next) => {
   try {
-    const { title, category, duration, questions } = req.body;
-    const test = new Test({ title, category, duration, questions });
+    const { title, categoryId, duration, questions, savollar_soni } = req.body;
 
-    if (!title || !category || !duration || !questions) {
+    if (!title || !categoryId || !duration || !questions) {
       return next(new ErrorResponse("Maydonlarni toliq to'ldiring", 400));
     }
-    if (test.questions.length !== 30) {
+
+    const test = await testModel.create({
+      title,
+      categoryId,
+      duration,
+      questions,
+      savollar_soni,
+    });
+
+    if (test.questions.length !== test.savollar_soni) {
       return next(
-        new ErrorResponse("Test uchun faqat 30 ta savol bo‘lishi kerak", 400)
+        new ErrorResponse(
+          `Test uchun faqat ${test.savollar_soni} ta savol bo‘lishi kerak`,
+          400
+        )
       );
     }
 
-    await test.save();
     // Testdagi savollar sonini olish
-    const savollar_soni = test.questions.length;
+    // const savollar_soni = test.questions.length;
 
-    res
-      .status(201)
-      .json({ message: "Test muvaffaqiyatli yaratildi", savollar_soni, test });
+    res.status(201).json({ message: "Test muvaffaqiyatli yaratildi", test });
   } catch (error) {
+    console.log(error);
     next(new ErrorResponse(error.message, 500));
   }
 };
@@ -60,7 +50,7 @@ const addQuesTions = async (req, res, next) => {
     };
 
     // Testni bazadan topamiz va savol qo‘shamiz
-    const updatedTest = await Test.findByIdAndUpdate(
+    const updatedTest = await testModel.findByIdAndUpdate(
       testId,
       { $push: { questions: newQuestion } }, // Yangi savol qo‘shish
       { new: true } // Yangilangan testni qaytarish
@@ -69,11 +59,12 @@ const addQuesTions = async (req, res, next) => {
     if (!updatedTest) {
       return next(new ErrorResponse("test topilmadi", 404));
     }
-    const test = await Test.findById(testId);
-    if (test.questions.length >= 30) {
-      return res.status(400).send({
-        message: "savollar soni cheklanga 30ta",
-      });
+    const test = await testModel.findById(testId);
+
+    if (test.questions.length !== 30) {
+      return next(
+        new ErrorResponse("Test uchun faqat 30 ta savol bo‘lishi kerak", 400)
+      );
     }
 
     const savollar_soni = test.questions.length;
@@ -100,7 +91,7 @@ const updateQuestion = async (req, res, next) => {
     }
 
     // Test va savolni yangilash
-    const updatedTest = await Test.findOneAndUpdate(
+    const updatedTest = await testModel.findOneAndUpdate(
       { _id: testId, "questions._id": questionId },
       {
         $set: {
@@ -148,21 +139,21 @@ const deleteTest = async (req, res, next) => {
 const deleteQuestion = async (req, res, next) => {
   try {
     const { testId, questionId } = req.params;
-
+    const test = await testModel.findById(testId);
+    const savol = await testModel.findById(questionId);
+    if (!test || !savol) {
+      return next(new ErrorResponse("test yoki savol topilmadi", 404));
+    }
     // Testni topish va savolni o'chirish
-    const updatedTest = await Test.findByIdAndUpdate(
+    const updatedTest = await testModel.findByIdAndUpdate(
       testId,
       { $pull: { questions: { _id: questionId } } },
       { new: true }
     );
 
-    if (!updatedTest) {
-      return res.status(404).json({ message: "Test yoki savol topilmadi" });
-    }
-
     res.status(200).json({
       message: "Savol muvaffaqiyatli o'chirildi",
-      updatedTest,
+      testlar_soni: updatedTest.questions.length,
     });
   } catch (error) {
     next(new Error(`Savolni o'chirishda xatolik yuz berdi: ${error.message}`));

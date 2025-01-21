@@ -22,30 +22,12 @@ const isAuthenticated = async (req, res, next) => {
     return next(new ErrorResponse(error, 500));
   }
 };
-// module.exports = { isAuthenticated };
 
-// const isAuthenticated = (req, res, next) => {
-//   try {
-//     // Tokenni Cookie yoki Authorization headerdan olish
-//     const { token } = req.cookies;
-//     console.log(token);
-//     if (!token) {
-//       // Token topilmasa, xatolik yuboriladi
-//       return res
-//         .status(401)
-//         .json({ message: "Logindan o'tishingiz kerak +++" });
-//     }
+const isAdmin = (req, res, next) => {
+  if (req.user.role !== "admin") {
+    return next(new ErrorResponse("Admin bo'lishingiz kerak", 403));
+  }
+  next();
+};
 
-//     // Tokenni tekshirish
-//     const decoded = jwt.verify(token, process.env.JWT_ACCESS_TOKEN);
-//     req.user = decoded; // Foydalanuvchi ma'lumotlarini so'rovga qo'shish
-//     next();
-//   } catch (error) {
-//     // Token noto'g'ri yoki muddati tugagan
-//     return res
-//       .status(401)
-//       .json({ message: "Noto'g'ri yoki muddati tugagan token" });
-//   }
-// };
-
-module.exports = { isAuthenticated };
+module.exports = { isAuthenticated, isAdmin };

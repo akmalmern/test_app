@@ -2,7 +2,8 @@ const userModel = require("../model/userModel");
 const ErrorResponse = require("../utils/errorResponse");
 const jwt = require("jsonwebtoken");
 const signUp = async (req, res, next) => {
-  const { userName, email, password, image } = req.body;
+  const { userName, email, password, image, role } = req.body;
+  console.log(req.body);
 
   const userExist = await userModel.findOne({ email });
 
@@ -26,6 +27,7 @@ const signUp = async (req, res, next) => {
       email,
       password,
       image: req.file ? req.file.path : null,
+      role,
     });
     // Access va Refresh tokenlarni yaratish
     const accessToken = await user.jwtGenerateToken();
@@ -50,9 +52,17 @@ const signUp = async (req, res, next) => {
       message: "Royxatdan otdingiz",
 
       accessToken,
+      user,
     });
   } catch (error) {
-    next(new ErrorResponse(error.message, 500));
+    if (error.name === "ValidationError") {
+      const errorMessages = Object.values(error.errors).map(
+        (val) => val.message
+      );
+      next(new ErrorResponse(errorMessages[0], 500));
+    } else {
+      next(new ErrorResponse(error.message, 500));
+    }
   }
 };
 
@@ -94,10 +104,10 @@ const signIn = async (req, res, next) => {
     res.status(200).json({
       success: true,
       message: "Tizimga muvaffaqiyatli kirdingiz",
+      user,
       accessToken,
     });
   } catch (error) {
-    console.log("+++" + error.message);
     next(new ErrorResponse(error.message, 500));
   }
 };

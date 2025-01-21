@@ -23,13 +23,16 @@ const userSchema = new mongoose.Schema(
         "Parolda kamida 1 ta katta harf, 1 ta kichik harf, 1 ta raqam va maxsus belgi boʻlishi kerak.",
       ],
     },
-    image: {
-      type: String,
-    },
     role: {
       type: String,
-      enum: ["user", "admin"],
+      enum: {
+        values: ["user", "admin"], // Faqat ruxsat etilgan qiymatlar
+        message: "role faqat 'user', yoki 'admin' bo'lishi mumkin", // Maxsus xabar
+      },
       default: "user",
+    },
+    image: {
+      type: String,
     },
   },
   { timestamps: true }
