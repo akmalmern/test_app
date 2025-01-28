@@ -14,6 +14,7 @@ const Login = () => {
       const { data } = await api.post("/signin", { email, password });
       if (data.success === true) {
         toast.success(data.message);
+        console.log(data.user.role);
         localStorage.setItem("token", data.accessToken);
         setTimeout(() => {
           navigate("/");
