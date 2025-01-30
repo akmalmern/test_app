@@ -54,18 +54,23 @@ userSchema.methods.comparePassword = async function (yourPassword) {
     console.log("Parolni tekshirishda xato:", error);
   }
 };
-// // accesstoken
+// Access Token yaratish (1 soat amal qiladi)
 userSchema.methods.jwtGenerateToken = function () {
-  return jwt.sign({ id: this.id }, process.env.JWT_ACCESS_TOKEN, {
-    expiresIn: 60 * 60 * 60 * 1000,
-  });
-};
-userSchema.methods.generateRefreshToken = function () {
-  return jwt.sign({ id: this.id }, process.env.JWT_REFRESH_TOKEN, {
-    expiresIn: 7 * 24 * 60 * 60 * 1000, // 7 kunlik amal qilish muddati
-  });
+  return jwt.sign(
+    { id: this.id, role: this.role }, // Role qo'shildi
+    process.env.JWT_ACCESS_TOKEN,
+    { expiresIn: "1h" }
+  );
 };
 
+// Refresh Token yaratish (7 kun amal qiladi)
+userSchema.methods.generateRefreshToken = function () {
+  return jwt.sign(
+    { id: this.id, role: this.role }, // Role qo'shildi
+    process.env.JWT_REFRESH_TOKEN,
+    { expiresIn: "7d" }
+  );
+};
 const userModel = mongoose.model("userModel", userSchema);
 
 module.exports = userModel;

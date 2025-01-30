@@ -109,6 +109,7 @@ const signIn = async (req, res, next) => {
     });
   } catch (error) {
     next(new ErrorResponse(error.message, 500));
+    console.log(error);
   }
 };
 
