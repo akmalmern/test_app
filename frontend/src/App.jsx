@@ -5,7 +5,7 @@ import Register from "./components/Register";
 import { AdminRoute, PrivateRoute } from "./auth/PrivateRoute";
 import Home from "./pages/Home";
 import CreateTest from "./pages/admin/CreateTest";
-
+import TestYechish from "./components/TestYechish";
 function App() {
   return (
     <Routes>
@@ -13,12 +13,13 @@ function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       {/* Faqat login bo‘lgan userlar uchun */}
-      <Route element={<PrivateRoute />}>
+      <Route path="/" element={<PrivateRoute />}>
         <Route path="/" element={<Home />} />
+        <Route path="/teststart/:id" element={<TestYechish />} />
       </Route>
 
       {/* Faqat admin uchun */}
-      <Route element={<AdminRoute />}>
+      <Route path="/admin" element={<AdminRoute />}>
         <Route path="/admin" element={<CreateTest />} />
       </Route>
     </Routes>

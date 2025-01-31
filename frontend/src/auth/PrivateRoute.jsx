@@ -3,11 +3,16 @@ import useAuth from "./useAuth";
 
 const PrivateRoute = () => {
   const user = useAuth();
+  if (user === null) return <p>Loading...</p>;
+  console.log("useAuth:", user);
   return user ? <Outlet /> : <Navigate to="/login" />;
 };
 
 const AdminRoute = () => {
   const user = useAuth();
+
+  if (user === null) return <p>Loading...</p>; // Ma'lumot yuklanayotgan bo‘lsa, kutish
+
   return user && user.role === "admin" ? <Outlet /> : <Navigate to="/login" />;
 };
 
