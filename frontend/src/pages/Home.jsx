@@ -2,23 +2,14 @@ import { toast } from "react-toastify";
 import api from "../api";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+// import useAuth from "../auth/useAuth";
 const Home = () => {
   const navigate = useNavigate();
   const [testlar, setTests] = useState([]);
   const [message, setMessage] = useState("");
   const [testlar_soni, setTestlarSoni] = useState(null);
-  const [profile, setUserProfile] = useState(null);
-  console.log("profile:++", profile);
-  const userProfile = async () => {
-    try {
-      const { data } = await api.get("/user-profile");
-      console.log("Profile data:", data.user);
-      setUserProfile(data.user);
-    } catch (error) {
-      toast.error(error.response.data.error);
-    }
-  };
+  // const profile = useAuth();
+
   const allTests = async () => {
     try {
       const { data } = await api.get("/all-tests");
@@ -27,14 +18,12 @@ const Home = () => {
         setMessage(data.message);
         setTestlarSoni(data.testlar_soni);
       }
-      console.log(data);
     } catch (error) {
       toast.error(error.response.data.error);
     }
   };
 
   useEffect(() => {
-    userProfile();
     allTests();
   }, []);
 
@@ -44,8 +33,7 @@ const Home = () => {
       const { data } = await api.get(`/start-test/${testId}`);
       if (data) {
         toast.success(data.message);
-        navigate(`/teststart/${testId}`);
-        console.log("Test ma'lumotlari:", data.test); // Test ma'lumotlari konsolda
+        navigate(`/test/${testId}`);
         // Bu yerda kerak bo'lsa navigatsiya yoki boshqa ishlovlarni bajarishingiz mumkin
       }
     } catch (error) {

@@ -17,7 +17,11 @@ const Login = () => {
         console.log(data.user.role);
         localStorage.setItem("token", data.accessToken);
         setTimeout(() => {
-          navigate("/");
+          if (data.user.role === "admin") {
+            navigate("/admin");
+          } else {
+            navigate("/");
+          }
         }, 1000);
       }
     } catch (error) {

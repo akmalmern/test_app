@@ -1,28 +1,18 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import api from "../api";
 import { toast } from "react-toastify";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import useAuth from "../auth/useAuth";
 
 const Navbar = () => {
-  const [profile, setUserProfile] = useState(null);
+  const navigate = useNavigate();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const profile = useAuth();
 
-  const userProfile = async () => {
-    try {
-      const { data } = await api.get("/user-profile");
-      console.log("Profile data:", data.user);
-      setUserProfile(data.user);
-    } catch (error) {
-      toast.error(error.response.data.error);
-    }
-  };
   // Sidebarni ochish yoki yopish funksiyasi
   const toggleSidebar = () => {
     setIsSidebarOpen((prev) => !prev);
   };
-  useEffect(() => {
-    userProfile();
-  }, []);
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
@@ -32,6 +22,21 @@ const Navbar = () => {
 
   const closeDropdown = () => {
     setIsDropdownOpen(false);
+  };
+  // log out funksiyasi
+  const logOut = async () => {
+    try {
+      const { data } = await api.get("/logout"); // ⏳ API so‘rovni kutish uchun `await` ishlatamiz
+
+      localStorage.removeItem("token"); // 🗑 Tokenni o‘chiramiz
+
+      if (data.success === true) {
+        toast.success(data.message); // ✅ Logout muvaffaqiyatli bo‘lsa, xabar chiqaramiz
+        navigate("/login"); // 🔄 Login sahifasiga o‘tish
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.error || "Nomalum xato yuz berdi!");
+    }
   };
 
   return (
@@ -116,7 +121,10 @@ const Navbar = () => {
                     </div>
                     <ul className="py-1">
                       <li>
-                        <button className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white">
+                        <button
+                          onClick={logOut}
+                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
+                        >
                           Sign out
                         </button>
                       </li>
@@ -143,7 +151,7 @@ const Navbar = () => {
         aria-label="Sidebar"
       >
         <div className="h-full px-3 pb-4 overflow-y-auto bg-white dark:bg-gray-800">
-          <ul className="space-y-2 font-medium">
+          {/* <ul className="space-y-2 font-medium">
             <li>
               <Link
                 to="/"
@@ -164,7 +172,7 @@ const Navbar = () => {
                 {/* <span className="inline-flex items-center justify-center px-2 ms-3 text-sm font-medium text-gray-800 bg-gray-100 rounded-full dark:bg-gray-700 dark:text-gray-300">
                   Pro
                 </span> */}
-              </Link>
+          {/* </Link>
             </li>
             <li>
               <Link
@@ -281,6 +289,103 @@ const Navbar = () => {
                 <span className="flex-1 ms-3 whitespace-nowrap">Sign Up</span>
               </a>
             </li>
+          </ul> */}
+          <ul className="space-y-2 font-medium">
+            {/* Faqat ADMINLAR uchun */}
+            {profile?.role === "admin" && (
+              <>
+                <li>
+                  <Link
+                    to="/admin/dashboard"
+                    className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                  >
+                    <svg
+                      className="w-5 h-5 text-gray-500 dark:text-gray-400"
+                      viewBox="0 0 20 20"
+                    >
+                      <path d="M10 0L2 4v8c0 5 3 7 8 7s8-2 8-7V4l-8-4z" />
+                    </svg>
+                    <span className="ms-3">Admin Panel</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/admin/users"
+                    className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                  >
+                    <svg
+                      className="w-5 h-5 text-gray-500 dark:text-gray-400"
+                      viewBox="0 0 20 20"
+                    >
+                      <path d="M10 2a4 4 0 100 8 4 4 0 000-8zM2 14s4-4 8-4 8 4 8 4v2H2v-2z" />
+                    </svg>
+                    <span className="ms-3">Barcha foydalanuvchilar</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/admin/settings"
+                    className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                  >
+                    <svg
+                      className="w-5 h-5 text-gray-500 dark:text-gray-400"
+                      viewBox="0 0 20 20"
+                    >
+                      <path d="M10 0a10 10 0 100 20 10 10 0 000-20zM2 10a8 8 0 0116 0H2z" />
+                    </svg>
+                    <span className="ms-3">Admin sozlamalari</span>
+                  </Link>
+                </li>
+              </>
+            )}
+
+            {/* Faqat USERLAR uchun */}
+            {profile?.role === "user" && (
+              <>
+                <li>
+                  <Link
+                    to="/"
+                    className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                  >
+                    <svg
+                      className="w-5 h-5 text-gray-500 dark:text-gray-400"
+                      viewBox="0 0 20 20"
+                    >
+                      <path d="M10 0L2 4v8c0 5 3 7 8 7s8-2 8-7V4l-8-4z" />
+                    </svg>
+                    <span className="ms-3">Bosh sahifa</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/results"
+                    className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                  >
+                    <svg
+                      className="w-5 h-5 text-gray-500 dark:text-gray-400"
+                      viewBox="0 0 20 20"
+                    >
+                      <path d="M10 0a10 10 0 100 20 10 10 0 000-20zM2 10a8 8 0 0116 0H2z" />
+                    </svg>
+                    <span className="ms-3">Mening natijalarim</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/profile"
+                    className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                  >
+                    <svg
+                      className="w-5 h-5 text-gray-500 dark:text-gray-400"
+                      viewBox="0 0 20 20"
+                    >
+                      <path d="M10 2a4 4 0 100 8 4 4 0 000-8zM2 14s4-4 8-4 8 4 8 4v2H2v-2z" />
+                    </svg>
+                    <span className="ms-3">Profilim</span>
+                  </Link>
+                </li>
+              </>
+            )}
           </ul>
         </div>
       </aside>
