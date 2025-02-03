@@ -28,6 +28,7 @@ const Login = () => {
       toast.error(
         error.response?.data?.error || "Serverda noma'lum xatolik yuz berdi"
       );
+      console.log(error);
     }
   };
 
