@@ -7,19 +7,35 @@ const isAuthenticated = async (req, res, next) => {
     const { accessToken } = req.cookies;
 
     if (!accessToken) {
-      return next(new ErrorResponse("Login dan o'tishingiz kerak 00", 401));
+      // return next(new ErrorResponse("Login dan o'tishingiz kerak 00", 401));
+      return res
+        .status(401)
+        .json({ success: false, message: "Login qilishingiz kerak 00" });
     }
 
     const decoded = jwt.verify(accessToken, process.env.JWT_ACCESS_TOKEN);
     console.log(decoded);
     req.user = await userModel.findById(decoded.id);
     if (!req.user) {
-      return next(new ErrorResponse("Foydalanuvchi topilmadi", 404));
+      // return next(new ErrorResponse("Foydalanuvchi topilmadi", 404));
+      return res
+        .status(404)
+        .json({ success: false, message: "Foydalanuvchi topilmadi" });
     }
 
     next();
   } catch (error) {
-    return next(new ErrorResponse(error, 500));
+    if (error.name === "TokenExpiredError") {
+      return res
+        .status(401)
+        .json({ success: false, message: "Token muddati tugagan" });
+    }
+
+    // return next(new ErrorResponse(error, 500));
+    return res.status(500).json({
+      success: false,
+      message: `Serverda xatolik yuz berdi: ${error}`,
+    });
   }
 };
 

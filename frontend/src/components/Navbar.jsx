@@ -296,7 +296,7 @@ const Navbar = () => {
               <>
                 <li>
                   <Link
-                    to="/admin/dashboard"
+                    to="/admin"
                     className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
                   >
                     <svg
@@ -320,6 +320,20 @@ const Navbar = () => {
                       <path d="M10 2a4 4 0 100 8 4 4 0 000-8zM2 14s4-4 8-4 8 4 8 4v2H2v-2z" />
                     </svg>
                     <span className="ms-3">Barcha foydalanuvchilar</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/admin/category"
+                    className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                  >
+                    <svg
+                      className="w-5 h-5 text-gray-500 dark:text-gray-400"
+                      viewBox="0 0 20 20"
+                    >
+                      <path d="M10 2a4 4 0 100 8 4 4 0 000-8zM2 14s4-4 8-4 8 4 8 4v2H2v-2z" />
+                    </svg>
+                    <span className="ms-3">Test Categoriyalari</span>
                   </Link>
                 </li>
                 <li>

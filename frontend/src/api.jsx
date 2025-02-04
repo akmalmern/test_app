@@ -4,22 +4,8 @@ import { toast } from "react-toastify";
 // axios instansiyasini yaratish
 const api = axios.create({
   baseURL: "http://localhost:5000", // Backend API manzili
-  withCredentials: true, // Agar cookie ishlatilsa
+  withCredentials: true, // Cookie orqali autentifikatsiya qilish
 });
-
-// Request interceptor (so‘rov yuborishdan oldin tokenni qo‘shish)
-api.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem("token"); // Mahalliy saqlashdan tokenni olish
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`; // Tokenni so'rovga qo'shish
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error); // So'rov interseptorida xato bo'lsa, xatoni qaytarish
-  }
-);
 
 // Response interceptor
 api.interceptors.response.use(
@@ -33,17 +19,15 @@ api.interceptors.response.use(
 
       try {
         // Refresh token orqali yangi token olish
-        const { data } = await axios.post(
+        await axios.post(
           "http://localhost:5000/refresh-token",
           {},
           { withCredentials: true }
         );
-        localStorage.setItem("token", data.accessToken); // Yangi tokenni saqlash
-        originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
+
         return api(originalRequest); // Asliy so'rovni qayta yuborish
       } catch (refreshError) {
         // Agar refresh ham muvaffaqiyatsiz bo'lsa
-        localStorage.removeItem("token"); // Tokenni o'chirish
         toast.error("Sessiya tugadi. Qaytadan login qiling!"); // Xato xabarini ko'rsatish
         window.location.href = "/login"; // Login sahifasiga yo‘naltirish
       }

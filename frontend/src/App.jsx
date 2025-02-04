@@ -9,6 +9,8 @@ import TestYechish from "./components/TestYechish";
 import UserTestResult from "./pages/UserTestResults";
 import Navbar from "./components/Navbar";
 import { ToastContainer } from "react-toastify";
+import AdminUsers from "./pages/admin/AdminUsers";
+import AdminCategory from "./pages/admin/AdminCategory";
 function App() {
   const location = useLocation(); // 📌 Joriy sahifani aniqlash
 
@@ -35,6 +37,8 @@ function App() {
         {/* Faqat admin uchun */}
         <Route element={<AdminRoute />}>
           <Route path="/admin" element={<CreateTest />} />
+          <Route path="/admin/users" element={<AdminUsers />} />
+          <Route path="/admin/category" element={<AdminCategory />} />
         </Route>
       </Routes>
     </>
