@@ -11,7 +11,35 @@ import Navbar from "./components/Navbar";
 import { ToastContainer } from "react-toastify";
 import AdminUsers from "./pages/admin/AdminUsers";
 import AdminCategory from "./pages/admin/AdminCategory";
+import { useEffect, useState } from "react";
+
+const OfflinePage = () => (
+  <div style={{ textAlign: "center", padding: "50px" }}>
+    <h1 style={{ color: "red" }}>Internet aloqasi yo‘q</h1>
+    <p>Iltimos, internet aloqangizni tekshiring va sahifani yangilang.</p>
+  </div>
+);
 function App() {
+  // internet o'chib qolsa chiqadigan sahifalar uchun
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
+
+  useEffect(() => {
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+
+    return () => {
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+    };
+  }, []);
+
+  if (!isOnline) {
+    return <OfflinePage />;
+  }
+
   const location = useLocation(); // 📌 Joriy sahifani aniqlash
 
   // 📌 Agar sahifa "/login" yoki "/register" bo‘lsa, Navbar ko‘rinmaydi
