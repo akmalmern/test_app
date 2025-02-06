@@ -12,6 +12,8 @@ import { ToastContainer } from "react-toastify";
 import AdminUsers from "./pages/admin/AdminUsers";
 import AdminCategory from "./pages/admin/AdminCategory";
 import { useEffect, useState } from "react";
+import "react-toastify/dist/ReactToastify.css";
+import AdminTestlar from "./pages/admin/AdminTestlar";
 
 const OfflinePage = () => (
   <div style={{ textAlign: "center", padding: "50px" }}>
@@ -67,6 +69,7 @@ function App() {
           <Route path="/admin" element={<CreateTest />} />
           <Route path="/admin/users" element={<AdminUsers />} />
           <Route path="/admin/category" element={<AdminCategory />} />
+          <Route path="/admin/testlar" element={<AdminTestlar />} />
         </Route>
       </Routes>
     </>

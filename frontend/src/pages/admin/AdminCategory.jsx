@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import api from "../../api";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const AdminCategory = () => {
+  const navigate = useNavigate();
   const [categories, setCategories] = useState([]);
   // modalni yopish
   const [isOpen, setIsOpen] = useState(false);
@@ -89,10 +91,11 @@ const AdminCategory = () => {
         title: selectedCategory.title,
         daraja: selectedCategory.daraja,
       });
-      if (data.success === true) {
+      if (data.success) {
         toast.success(data.message || "Muvaffaqiyatli o'zgartirildi");
         setIsOpen(false);
         setIsEditMode(false);
+        navigate(`/admin/category`);
       }
     } catch (error) {
       toast.error(error.response?.data?.error || "Xatolik yuz berdi");
