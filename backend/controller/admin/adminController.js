@@ -9,6 +9,15 @@ const createTest = async (req, res, next) => {
       return next(new ErrorResponse("Maydonlarni toliq to'ldiring", 400));
     }
 
+    if (questions.length !== savollar_soni) {
+      return next(
+        new ErrorResponse(
+          `Test uchun faqat ${savollar_soni} ta savol bo‘lishi kerak`,
+          400
+        )
+      );
+    }
+
     const test = await testModel.create({
       title,
       categoryId,
@@ -16,18 +25,6 @@ const createTest = async (req, res, next) => {
       questions,
       savollar_soni,
     });
-
-    if (test.questions.length !== test.savollar_soni) {
-      return next(
-        new ErrorResponse(
-          `Test uchun faqat ${test.savollar_soni} ta savol bo‘lishi kerak`,
-          400
-        )
-      );
-    }
-
-    // Testdagi savollar sonini olish
-    // const savollar_soni = test.questions.length;
 
     res.status(201).json({ message: "Test muvaffaqiyatli yaratildi", test });
   } catch (error) {
