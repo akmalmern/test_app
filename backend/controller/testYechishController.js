@@ -5,7 +5,9 @@ const UserTestResult = require("../model/testNatijalarModel");
 // Barcha testlarni va savollarni olish
 const AllTests = async (req, res, next) => {
   try {
-    const tests = await testModel.find().populate("categoryId", "name title");
+    const tests = await testModel
+      .find()
+      .populate("categoryId", "name title daraja");
 
     if (!tests || tests.length === 0) {
       return next(new ErrorResponse("Testlar topilmadi", 404));
