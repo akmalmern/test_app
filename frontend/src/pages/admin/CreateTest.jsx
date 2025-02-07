@@ -73,7 +73,7 @@ const CreateTest = () => {
         savollar_soni: Number(savollarSoni),
       });
 
-      setSuccess("Test muvaffaqiyatli yaratildi");
+      toast.success(data.message);
       setInvalidQuestions([]);
 
       setTitle("");
@@ -128,7 +128,7 @@ const CreateTest = () => {
                   <option value="">Kategoriya tanlang</option>
                   {categories.map((category) => (
                     <option key={category._id} value={category._id}>
-                      {category.name}
+                      {category.name}(qiyinlik darajasi=_{category.daraja})
                     </option>
                   ))}
                 </select>
