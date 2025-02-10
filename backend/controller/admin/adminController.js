@@ -118,15 +118,15 @@ const deleteTest = async (req, res, next) => {
     const { testId } = req.params;
 
     // Testni topib o'chirish
-    const deletedTest = await Test.findByIdAndDelete(testId);
+    const deletedTest = await testModel.findByIdAndDelete(testId);
 
     if (!deletedTest) {
       return res.status(404).json({ message: "Test topilmadi" });
     }
 
     res.status(200).json({
+      success: true,
       message: "Test muvaffaqiyatli o'chirildi",
-      deletedTest,
     });
   } catch (error) {
     next(new ErrorResponse(error.message, 500));

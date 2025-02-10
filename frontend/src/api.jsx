@@ -24,16 +24,53 @@ api.interceptors.response.use(
           {},
           { withCredentials: true }
         );
+        // const { accessToken } = refreshResponse.data;
+
+        //         localStorage.setItem('accessToken', accessToken); // LocalStorage ga saqlash
 
         return api(originalRequest); // Asliy so'rovni qayta yuborish
       } catch (refreshError) {
         // Agar refresh ham muvaffaqiyatsiz bo'lsa
         toast.error("Sessiya tugadi. Qaytadan login qiling!"); // Xato xabarini ko'rsatish
+        localStorage.removeItem("accessToken");
+        //         // Login sahifasiga yo'naltirish
+        //         window.location.href = '/login';
+        //         toast.error("Iltimos, qayta kiring!");
         window.location.href = "/login"; // Login sahifasiga yo‘naltirish
       }
     }
     return Promise.reject(error); // Agar boshqa xato bo‘lsa, qaytarish
   }
 );
+
+// api.interceptors.response.use(
+//   (response) => response,
+//   async (error) => {
+//     const originalRequest = error.config;
+//     if (error.response.status === 401 && !originalRequest._retry) {
+//       originalRequest._retry = true;
+//       try {
+//         const refreshResponse = await api.post('/refresh_token'); // Refresh token so'rovi
+//         const { accessToken } = refreshResponse.data;
+
+//         localStorage.setItem('accessToken', accessToken); // LocalStorage ga saqlash
+//         api.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`; // Header ga qo'shish
+//         originalRequest.headers['Authorization'] = `Bearer ${accessToken}`; // Qayta so'rov uchun
+
+//         return api(originalRequest); // Qayta so'rov
+//       } catch (err) {
+//         // Refresh token ishlamasa yoki muddati tugagan bo'lsa
+//         localStorage.removeItem('accessToken');
+//         // Login sahifasiga yo'naltirish
+//         window.location.href = '/login';
+//         toast.error("Iltimos, qayta kiring!");
+//         return Promise.reject(err);
+//       }
+//     }
+//     return Promise.reject(error);
+//   }
+// );
+
+// // ... Komponentlarda api dan foydalanish
 
 export default api; // axios instance'ni eksport qilish

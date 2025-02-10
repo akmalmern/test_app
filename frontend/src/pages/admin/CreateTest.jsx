@@ -128,7 +128,7 @@ const CreateTest = () => {
                   <option value="">Kategoriya tanlang</option>
                   {categories.map((category) => (
                     <option key={category._id} value={category._id}>
-                      {category.name}(qiyinlik darajasi=_{category.daraja})
+                      {category.name} (qiyinlik darajasi: {category.daraja})
                     </option>
                   ))}
                 </select>

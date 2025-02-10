@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import api from "../../api";
+import { Link } from "react-router-dom";
 
 const AdminTestlar = () => {
   const [testlar, setTestlar] = useState([]);
@@ -17,6 +18,19 @@ const AdminTestlar = () => {
   useEffect(() => {
     Testlar();
   }, []);
+  // Testni O'chirish
+  const deleteTest = async (id) => {
+    try {
+      const { data } = await api.delete(`/delete/test/${id}`);
+      if (data.success) {
+        toast.success(data.message);
+        Testlar();
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error.response.data.error);
+    }
+  };
   return (
     <>
       <div className="p-4 sm:ml-64">
@@ -68,8 +82,8 @@ const AdminTestlar = () => {
             </div>
           </div>
           <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-            <div className="flex items-center justify-between flex-column flex-wrap md:flex-row space-y-4 md:space-y-0 pb-4 bg-white dark:bg-gray-900">
-              <div>
+            <div className="flex items-center justify-between flex-column flex-wrap md:flex-row space-y-4 md:space-y-0 pb-4 bg-white dark:bg-gray-900 pt-2">
+              <div className="">
                 <button
                   id="dropdownActionButton"
                   data-dropdown-toggle="dropdownAction"
@@ -170,16 +184,23 @@ const AdminTestlar = () => {
               <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
                   <th scope="col" className="px-6 py-3">
-                    Name
+                    Test Nomi
                   </th>
                   <th scope="col" className="px-6 py-3">
-                    Position
+                    Kategoriya
                   </th>
                   <th scope="col" className="px-6 py-3">
-                    Status
+                    Belginlangan vaqt
                   </th>
                   <th scope="col" className="px-6 py-3">
-                    Action
+                    Savollar soni
+                  </th>
+
+                  <th scope="col" className="px-6 py-3">
+                    Taxrirlash
+                  </th>
+                  <th scope="col" className="px-6 py-3">
+                    {` O'chirish`}
                   </th>
                 </tr>
               </thead>
@@ -194,31 +215,54 @@ const AdminTestlar = () => {
                       className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white"
                     >
                       <div className="">
-                        <div className="text-base font-semibold">
+                        <div className="text-base font-semibold ">
                           {test.title}
                         </div>
                         <div className="font-normal text-gray-500">
-                          neil.sims@flowbite.com
+                          {test.description}
                         </div>
                       </div>
                     </th>
-                    <td className="px-6 py-4">React Developer</td>
+
                     <td className="px-6 py-4">
-                      <div className="flex items-center">
-                        <div className="h-2.5 w-2.5 rounded-full bg-green-500 me-2">
-                          {" "}
-                          {test.categoryId?.daraja || "Noma’lum"}
-                        </div>{" "}
-                        {test.categoryId.name}
+                      <div className="flex items-start">
+                        <div className="flex flex-col">
+                          <span className="text-sm font-semibold">
+                            {test.categoryId?.name}
+                          </span>
+                          <span
+                            className={`text-xs font-medium ${
+                              test.categoryId?.daraja === "qiyin"
+                                ? "text-red-500"
+                                : test.categoryId?.daraja === "o'rta"
+                                ? "text-yellow-500"
+                                : test.categoryId?.daraja === "oson"
+                                ? "text-green-500"
+                                : "text-gray-500"
+                            }`}
+                          >
+                            {test.categoryId?.daraja || "Noma’lum"}
+                          </span>
+                        </div>
                       </div>
                     </td>
+                    <td className="px-6 py-4">{test.duration} daqiqa</td>
+                    <td className="px-6 py-4">{test.savollar_soni} ta</td>
                     <td className="px-6 py-4">
-                      <a
-                        href="#"
+                      <Link
+                        to={`/admin/edit-test/${test._id}`}
                         className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
                       >
                         Edit user
-                      </a>
+                      </Link>
+                    </td>
+                    <td className="px-6 py-4">
+                      <button
+                        className="font-medium text-red-600 dark:text-red-500 hover:underline"
+                        onClick={() => deleteTest(test._id)}
+                      >
+                        {` O'chirish`}
+                      </button>
                     </td>
                   </tr>
                 ))}

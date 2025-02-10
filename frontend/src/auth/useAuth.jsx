@@ -22,6 +22,7 @@ const useAuth = () => {
         setUser(data.user);
       } catch (error) {
         console.log(error);
+        console.log(error);
         if (error.response?.status === 401) {
           localStorage.removeItem("token"); // Tokenni o'chirish
           navigate("/login"); // Agar 401 bo‘lsa, login sahifaga yo‘naltiramiz
