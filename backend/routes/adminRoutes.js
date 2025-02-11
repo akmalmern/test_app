@@ -7,6 +7,7 @@ const {
   updateQuestion,
   deleteTest,
   deleteQuestion,
+  editTest,
 } = require("../controller/admin/adminController");
 const { isAuthenticated, isAdmin } = require("../middlware/isAuth");
 
@@ -36,5 +37,8 @@ router.delete(
   isAdmin,
   deleteQuestion
 );
+
+// edit test
+router.put("/edit/test/:id", isAuthenticated, isAdmin, editTest);
 
 module.exports = router;

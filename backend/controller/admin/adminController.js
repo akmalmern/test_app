@@ -32,6 +32,26 @@ const createTest = async (req, res, next) => {
     next(new ErrorResponse(error.message, 500));
   }
 };
+
+const editTest = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const test0 = await testModel.findById(id);
+    if (!test0) {
+      return next(new ErrorResponse("test topilmadi", 404));
+    }
+    const test1 = await testModel.findByIdAndUpdate(id, req.body, {
+      new: true,
+    });
+    res.status(200).json({
+      success: true,
+      message: "Test Muvofaqiyatli o'zgartirildi",
+    });
+  } catch (error) {
+    next(new ErrorResponse(error.message, 500));
+  }
+};
+
 // mavjud savollarga yangi savol qoshish;
 
 const addQuesTions = async (req, res, next) => {
@@ -163,4 +183,5 @@ module.exports = {
   updateQuestion,
   deleteTest,
   deleteQuestion,
+  editTest,
 };
