@@ -15,6 +15,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 // uploads papkasini statik fayl sifatida taqdim etish
+// app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 // CORS sozlamalari
 app.use(

@@ -2,7 +2,7 @@ const userModel = require("../model/userModel");
 const ErrorResponse = require("../utils/errorResponse");
 const jwt = require("jsonwebtoken");
 const signUp = async (req, res, next) => {
-  const { userName, email, password, image, role } = req.body;
+  const { userName, email, password, role } = req.body;
   console.log(req.body);
 
   const userExist = await userModel.findOne({ email });
@@ -22,11 +22,14 @@ const signUp = async (req, res, next) => {
   }
 
   try {
+    const image = req.file ? req.file.filename : null; // Faqat fayl nomini saqlaymiz
+    // const image = req.file ? req.file.path.replace(/\\/g, "/") : null;
+
     const user = await userModel.create({
       userName,
       email,
       password,
-      image: req.file ? req.file.path : null,
+      image,
       role,
     });
     // Access va Refresh tokenlarni yaratish

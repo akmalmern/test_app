@@ -8,6 +8,8 @@ const {
   deleteTest,
   deleteQuestion,
   editTest,
+  getUsers,
+  deleteUser,
 } = require("../controller/admin/adminController");
 const { isAuthenticated, isAdmin } = require("../middlware/isAuth");
 
@@ -40,5 +42,7 @@ router.delete(
 
 // edit test
 router.put("/edit/test/:id", isAuthenticated, isAdmin, editTest);
-
+// barcha userlar
+router.get("/users", isAuthenticated, isAdmin, getUsers);
+router.delete("/user/delete/:id", isAuthenticated, isAdmin, deleteUser);
 module.exports = router;

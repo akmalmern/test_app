@@ -37,7 +37,12 @@ const userSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-
+// User o‘chirilganda, unga tegishli test natijalari ham o‘chadi
+userSchema.pre("findOneAndDelete", async function (next) {
+  const userId = this.getQuery()._id;
+  await mongoose.model("UserTestResult").deleteMany({ userId });
+  next();
+});
 // encrypting password before saving
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) {

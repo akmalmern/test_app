@@ -1,4 +1,5 @@
 const testModel = require("../../model/testModel");
+const userModel = require("../../model/userModel");
 const ErrorResponse = require("../../utils/errorResponse");
 
 const createTest = async (req, res, next) => {
@@ -177,6 +178,41 @@ const deleteQuestion = async (req, res, next) => {
   }
 };
 
+const getUsers = async (req, res, next) => {
+  try {
+    const users = await userModel.find();
+    if (!users) {
+      return next(new ErrorResponse("Foydalanuvchilar topilmadi", 404));
+    }
+    res.status(200).json({
+      success: true,
+      message: "Batcha foydalanuvchilar",
+      users,
+    });
+  } catch (error) {
+    next(new ErrorResponse(error.message, 500));
+  }
+};
+const deleteUser = async (req, res, next) => {
+  try {
+    const id = req.params.id;
+
+    const user = await userModel.findById(id);
+    if (!user) {
+      return next(new ErrorResponse("Foydalanuvchilar topilmadi", 404));
+    }
+
+    await userModel.findOneAndDelete({ _id: id }); // userModeldagi Middleware avtomatik chaqiriladi
+
+    res.status(200).json({
+      success: true,
+      message: "Foydalanuvchi  o‘chirildi",
+    });
+  } catch (error) {
+    next(new ErrorResponse(error.message, 500));
+  }
+};
+
 module.exports = {
   createTest,
   addQuesTions,
@@ -184,4 +220,6 @@ module.exports = {
   deleteTest,
   deleteQuestion,
   editTest,
+  getUsers,
+  deleteUser,
 };

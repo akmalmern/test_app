@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 
 // axios instansiyasini yaratish
 const api = axios.create({
-  baseURL: "http://localhost:5000", // Backend API manzili
+  baseURL: import.meta.env.VITE_API_URL || "http://localhost:5000",
   withCredentials: true, // Cookie orqali autentifikatsiya qilish
 });
 
