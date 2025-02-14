@@ -12,6 +12,7 @@ const userTestResultSchema = new mongoose.Schema(
       ref: "testModel",
       required: [true, "Test ID kerak"],
     },
+
     correctAnswers: {
       type: Number,
       required: [true, "To‘g‘ri javoblar soni kerak"],

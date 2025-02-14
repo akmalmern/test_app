@@ -252,10 +252,22 @@ const TestYakunlash = async (req, res, next) => {
 const userTestsResult = async (req, res, next) => {
   try {
     const userId = req.user.id;
-
     const results = await UserTestResult.find({ userId })
-      .populate("testId", "title category")
+      .populate({
+        path: "testId",
+        select: "title categoryId",
+        populate: {
+          path: "categoryId",
+          select: "name title daraja",
+        },
+      })
       .sort({ date: -1 });
+    console.log(
+      results.map((r) => ({
+        testId: r.testId,
+        categoryId: r.testId?.categoryId,
+      }))
+    );
 
     if (!results || results.length === 0) {
       return next(new ErrorResponse("Natijalar topilmadi", 404));
@@ -264,16 +276,22 @@ const userTestsResult = async (req, res, next) => {
     res.status(200).json({
       message: "Foydalanuvchi test natijalari",
       yechganTestlarSoni: results.length,
-      results: results.map((result) => ({
-        score: ((result.correctAnswers / result.totalQuestions) * 100).toFixed(
-          2
-        ),
-        testTitle: result.testId.title,
-        category: result.testId.category,
-        correctAnswers: result.correctAnswers,
-        totalQuestions: result.totalQuestions,
-        completedAt: new Date(result.completedAt).toLocaleString(),
-      })),
+      // results,
+      results: results
+        .filter((result) => result.testId) // testId null bo‘lsa, natijadan chiqarib tashlaymiz
+        .map((result) => ({
+          score: (
+            (result.correctAnswers / result.totalQuestions) *
+            100
+          ).toFixed(2),
+          testTitle: result.testId.title,
+          category: result.testId.categoryId.name,
+          daraja: result.testId.categoryId.daraja,
+          categoryTitle: result.testId.categoryId.title,
+          correctAnswers: result.correctAnswers,
+          totalQuestions: result.totalQuestions,
+          completedAt: new Date(result.completedAt).toLocaleString(),
+        })),
     });
   } catch (error) {
     next(new ErrorResponse(error.message, 500));

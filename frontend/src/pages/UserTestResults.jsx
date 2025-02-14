@@ -10,6 +10,7 @@ const UserTestResults = () => {
       const { data } = await api.get("/results");
       setResults(data.results);
     } catch (error) {
+      console.log(error);
       toast.error(error.response.data.error);
     }
   };
@@ -63,12 +64,33 @@ const UserTestResults = () => {
                       </div>
 
                       <h2 className="text-2xl font-bold text-white">
-                        {result.testTitle}
+                        {result.testTitle} <hr />
                       </h2>
+
+                      <span
+                        className={` ml-2 text-xs font-medium ${
+                          result.daraja === "qiyin"
+                            ? "text-red-500"
+                            : result.daraja === "o'rta"
+                            ? "text-yellow-500"
+                            : result.daraja === "oson"
+                            ? "text-green-500"
+                            : "text-gray-500"
+                        }`}
+                      >
+                        {result.daraja || "Noma’lum"}
+                      </span>
                     </div>
 
                     <p className="text-lg text-white mb-4">
                       <span className="font-semibold">{result.category}</span>
+                      <br />
+                      <span
+                        className="text-gray"
+                        style={{ color: "gray", fontSize: "0.8rem" }}
+                      >
+                        {result.categoryTitle}
+                      </span>
                     </p>
                     <div className="flex justify-between items-center mb-6">
                       <div>

@@ -49,9 +49,9 @@ const Home = () => {
       <div className="p-4 sm:ml-64">
         <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14">
           <div className="grid grid-cols-3 gap-4 mb-4">
-            <div className="flex items-center justify-center h-24 rounded bg-gray-50 dark:bg-gray-800 ">
+            <div className="flex text-white items-center justify-center h-24 rounded bg-gray-50 dark:bg-gray-800 ">
               <h1>{message}</h1>
-              <h1>{testlar_soni}</h1>
+              <h1 className="ml-3">{testlar_soni}</h1> ta
             </div>
             <div className="flex items-center justify-center h-24 rounded bg-gray-50 dark:bg-gray-800">
               <p className="text-2xl text-gray-400 dark:text-gray-500">
@@ -131,8 +131,21 @@ const Home = () => {
                       </svg>
                     </div>
                     <h2 className="text-white dark:text-white text-lg font-medium">
-                      {test.category}
-                    </h2>
+                      {test.categoryId.name}
+                    </h2>{" "}
+                    <span
+                      className={` ml-2 text-xs font-medium ${
+                        test.categoryId?.daraja === "qiyin"
+                          ? "text-red-500"
+                          : test.categoryId?.daraja === "o'rta"
+                          ? "text-yellow-500"
+                          : test.categoryId?.daraja === "oson"
+                          ? "text-green-500"
+                          : "text-gray-500"
+                      }`}
+                    >
+                      {test.categoryId?.daraja || "Noma’lum"}
+                    </span>
                   </div>
                   <div className="flex flex-col justify-between flex-grow">
                     <p className="leading-relaxed text-base text-white dark:text-gray-300">

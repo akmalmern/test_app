@@ -41,6 +41,11 @@ const Login = () => {
               <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
                 Login bilan kirish
               </h1>
+              <h1>
+                {"Admin uchun "} <hr />
+                {`"email": "admin@gmail.com",`} <hr />
+                {` "password": "Admin!123"`}
+              </h1>
               <form
                 className="space-y-4 md:space-y-6"
                 action="#"
