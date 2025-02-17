@@ -1,6 +1,8 @@
 const testModel = require("../../model/testModel");
 const userModel = require("../../model/userModel");
+const UserTestResult = require("../../model/testNatijalarModel");
 const ErrorResponse = require("../../utils/errorResponse");
+const { userTestsResult } = require("../testYechishController");
 
 const createTest = async (req, res, next) => {
   try {
@@ -53,87 +55,6 @@ const editTest = async (req, res, next) => {
   }
 };
 
-// mavjud savollarga yangi savol qoshish;
-
-const addQuesTions = async (req, res, next) => {
-  try {
-    const { testId } = req.params;
-    const { question, options, correctAnswer } = req.body;
-
-    // Yangi savol obyekti
-    const newQuestion = {
-      question,
-      options,
-      correctAnswer,
-    };
-
-    // Testni bazadan topamiz va savol qo‘shamiz
-    const updatedTest = await testModel.findByIdAndUpdate(
-      testId,
-      { $push: { questions: newQuestion } }, // Yangi savol qo‘shish
-      { new: true } // Yangilangan testni qaytarish
-    );
-
-    if (!updatedTest) {
-      return next(new ErrorResponse("test topilmadi", 404));
-    }
-    const test = await testModel.findById(testId);
-
-    if (test.questions.length !== 30) {
-      return next(
-        new ErrorResponse("Test uchun faqat 30 ta savol bo‘lishi kerak", 400)
-      );
-    }
-
-    const savollar_soni = test.questions.length;
-
-    res.status(200).json({
-      message: "Yangi savol qo‘shildi",
-      savollar_soni,
-      updatedTest,
-    });
-  } catch (error) {
-    next(new ErrorResponse(error.message, 500));
-  }
-};
-
-// test ichidagi savolni o'zgartirish
-const updateQuestion = async (req, res, next) => {
-  try {
-    const { testId, questionId } = req.params;
-    const { question, options, correctAnswer } = req.body;
-
-    // Validatsiya
-    if (!question || !options || !correctAnswer) {
-      return res.status(400).json({ message: "Barcha maydonlarni to'ldiring" });
-    }
-
-    // Test va savolni yangilash
-    const updatedTest = await testModel.findOneAndUpdate(
-      { _id: testId, "questions._id": questionId },
-      {
-        $set: {
-          "questions.$.question": question,
-          "questions.$.options": options,
-          "questions.$.correctAnswer": correctAnswer,
-        },
-      },
-      { new: true }
-    );
-
-    if (!updatedTest) {
-      return res.status(404).json({ message: "Test yoki savol topilmadi" });
-    }
-
-    res.status(200).json({
-      message: "Savol tahrirlandi",
-      updatedTest,
-    });
-  } catch (error) {
-    next(new ErrorResponse(error.message, 500));
-  }
-};
-
 const deleteTest = async (req, res, next) => {
   try {
     const { testId } = req.params;
@@ -151,30 +72,6 @@ const deleteTest = async (req, res, next) => {
     });
   } catch (error) {
     next(new ErrorResponse(error.message, 500));
-  }
-};
-
-const deleteQuestion = async (req, res, next) => {
-  try {
-    const { testId, questionId } = req.params;
-    const test = await testModel.findById(testId);
-    const savol = await testModel.findById(questionId);
-    if (!test || !savol) {
-      return next(new ErrorResponse("test yoki savol topilmadi", 404));
-    }
-    // Testni topish va savolni o'chirish
-    const updatedTest = await testModel.findByIdAndUpdate(
-      testId,
-      { $pull: { questions: { _id: questionId } } },
-      { new: true }
-    );
-
-    res.status(200).json({
-      message: "Savol muvaffaqiyatli o'chirildi",
-      testlar_soni: updatedTest.questions.length,
-    });
-  } catch (error) {
-    next(new Error(`Savolni o'chirishda xatolik yuz berdi: ${error.message}`));
   }
 };
 
@@ -213,13 +110,64 @@ const deleteUser = async (req, res, next) => {
   }
 };
 
+const AdminGetUserResult = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    // Foydalanuvchining test natijalarini olish
+    const userResult = await UserTestResult.find({ userId: id })
+      .populate({
+        path: "testId",
+        select: "title categoryId",
+        populate: {
+          path: "categoryId",
+          select: "name title daraja",
+        },
+      })
+      .sort({ date: -1 });
+
+    // Konsolga tekshirish uchun chiqaramiz
+    console.log("User Test Results:", userResult);
+
+    // Agar natijalar bo‘lmasa, xatolik qaytarish
+    if (!userResult || userResult.length === 0) {
+      return next(
+        new ErrorResponse("Ushbu foydalanuvchi test ishlamagan", 404)
+      );
+    }
+
+    // Natijalarni JSON formatda qaytarish
+    res.status(200).json({
+      message: "Admin uchun foydalanuvchi test natijalari",
+      userId: id,
+      totalTests: userResult.length,
+      results: userResult
+        .filter((result) => result.testId) // testId null bo‘lsa, olib tashlaymiz
+        .map((result) => ({
+          score: (
+            (result.correctAnswers / result.totalQuestions) *
+            100
+          ).toFixed(2),
+          testTitle: result.testId.title,
+          category: result.testId.categoryId.name,
+          daraja: result.testId.categoryId.daraja,
+          categoryTitle: result.testId.categoryId.title,
+          correctAnswers: result.correctAnswers,
+          totalQuestions: result.totalQuestions,
+          completedAt: new Date(result.completedAt).toLocaleString(),
+        })),
+    });
+  } catch (error) {
+    console.error("Xatolik:", error);
+    next(new ErrorResponse("Server xatosi", 500));
+  }
+};
+
 module.exports = {
   createTest,
-  addQuesTions,
-  updateQuestion,
   deleteTest,
-  deleteQuestion,
   editTest,
   getUsers,
   deleteUser,
+  AdminGetUserResult,
 };

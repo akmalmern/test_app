@@ -31,25 +31,7 @@ const AllTests = async (req, res, next) => {
     next(new ErrorResponse(error.message, 500));
   }
 };
-// "/:testId" bitta testni ko'rish
-const OneTest = async (req, res, next) => {
-  try {
-    const { testId } = req.params;
 
-    const test = await testModel.findById(testId);
-    if (!test) {
-      return next(new ErrorResponse("test topilmadi", 404));
-    }
-
-    res.status(200).json({
-      success: true,
-      message: "Test topildi",
-      test,
-    });
-  } catch (error) {
-    next(new ErrorResponse(error.message, 500));
-  }
-};
 // testni katego'ryasi bo'yicha ko'rish
 const getTestCategory = async (req, res, next) => {
   try {
@@ -300,7 +282,6 @@ const userTestsResult = async (req, res, next) => {
 
 module.exports = {
   AllTests,
-  OneTest,
   getTestCategory,
   getTestBoshlash,
   TestYakunlash,

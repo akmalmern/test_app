@@ -80,8 +80,8 @@ const AdminCategory = () => {
       title: cat.title,
       daraja: cat.daraja,
     });
-    setIsEditMode(true); // Tahrir qilish rejimiga o'tish
-    setIsOpen(true); // Modalni ochish
+    setIsEditMode(true);
+    setIsOpen(true);
   };
 
   const handleUpdate = async () => {
@@ -176,7 +176,6 @@ const AdminCategory = () => {
                     </span>
                   </div>
 
-                  {/* Edit va Delete tugmalari */}
                   <div className="absolute top-4 right-4 flex space-x-2">
                     <button
                       onClick={() => handleEdit(cat)}
@@ -224,10 +223,7 @@ const AdminCategory = () => {
                       {cat.title}
                     </p>
 
-                    <button
-                      // onClick={() => handleStartcat(cat._id)}
-                      className="mt-3 text-black dark:text-white hover:text-blue-600 inline-flex items-center"
-                    >
+                    <button className="mt-3 text-black dark:text-white hover:text-blue-600 inline-flex items-center">
                       catni boshlash
                       <svg
                         fill="none"
@@ -269,7 +265,6 @@ const AdminCategory = () => {
                     </button>
                   </div>
 
-                  {/* Form */}
                   <form
                     className="p-4 md:p-5"
                     onSubmit={isEditMode ? handleUpdate : addCategory}

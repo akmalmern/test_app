@@ -12,6 +12,7 @@ const AdminUsers = () => {
         setUsers(data.users);
       }
     } catch (error) {
+      console.log(error);
       toast.error(error.response.data.error);
     }
   };
@@ -30,6 +31,23 @@ const AdminUsers = () => {
       }
     } catch (error) {
       toast.error(error.response.data.error);
+    }
+  };
+  // user test results
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [userResults, setUserResults] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const getUserResults = async (id) => {
+    setLoading(true);
+    try {
+      const { data } = await api.get(`/user/user-results/${id}`);
+      setUserResults(data.results);
+      setSelectedUser(id);
+    } catch (error) {
+      toast.error("Natijalarni olishda xatolik: " + error.response.data.error);
+    } finally {
+      setLoading(false);
     }
   };
   return (
@@ -57,7 +75,6 @@ const AdminUsers = () => {
                     d="M9 1v16M1 9h16"
                   />
                 </svg>
-                +55555555555555555555555
               </p>
             </div>
             <div className="flex items-center justify-center h-24 rounded bg-gray-50 dark:bg-gray-800">
@@ -77,7 +94,6 @@ const AdminUsers = () => {
                     d="M9 1v16M1 9h16"
                   />
                 </svg>
-                sssssssssssssss
               </p>
             </div>
           </div>
@@ -187,13 +203,13 @@ const AdminUsers = () => {
                     Name
                   </th>
                   <th scope="col" className="px-6 py-3">
-                    Position
+                    Role
                   </th>
                   <th scope="col" className="px-6 py-3">
-                    Status
+                    Natijalar
                   </th>
                   <th scope="col" className="px-6 py-3">
-                    Action
+                    {`O'chirish`}
                   </th>
                 </tr>
               </thead>
@@ -230,12 +246,14 @@ const AdminUsers = () => {
                         </div>
                       </div>
                     </th>
-                    <td className="px-6 py-4">React Developer</td>
+                    <td className="px-6 py-4">{user.role}</td>
                     <td className="px-6 py-4">
-                      <div className="flex items-center">
-                        <div className="h-2.5 w-2.5 rounded-full bg-green-500 me-2"></div>{" "}
-                        Online
-                      </div>
+                      <button
+                        onClick={() => getUserResults(user._id)}
+                        className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                      >
+                        Natijalar
+                      </button>
                     </td>
                     <td className="px-6 py-4">
                       <button
@@ -250,55 +268,48 @@ const AdminUsers = () => {
               </tbody>
             </table>
           </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-            {/* {testlar.map((test) => (
-              <div className="p-4 " key={test._id}>
-                <div className="flex rounded-lg h-full dark:bg-gray-800 bg-teal-400 p-8 flex-col">
-                  <div className="flex items-center mb-3">
-                    <div className="w-8 h-8 mr-3 inline-flex items-center justify-center rounded-full dark:bg-indigo-500 bg-indigo-500 text-white flex-shrink-0">
-                      <svg
-                        fill="none"
-                        stroke="currentColor"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        className="w-5 h-5"
-                        viewBox="0 0 24 24"
-                      >
-                        <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
-                      </svg>
-                    </div>
-                    <h2 className="text-white dark:text-white text-lg font-medium">
-                      {test.category}
-                    </h2>
-                  </div>
-                  <div className="flex flex-col justify-between flex-grow">
-                    <p className="leading-relaxed text-base text-white dark:text-gray-300">
-                      {test.title}
-                    </p>
-                    <button
-                      // onClick={() => handleStartTest(test._id)}
-                      className="mt-3 text-black dark:text-white hover:text-blue-600 inline-flex items-center"
-                    >
-                      Testni boshlash
-                      <svg
-                        fill="none"
-                        stroke="currentColor"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        className="w-4 h-4 ml-2"
-                        viewBox="0 0 24 24"
-                      >
-                        <path d="M5 12h14M12 5l7 7-7 7"></path>
-                      </svg>
-                    </button>
-                  </div>
-                </div>
+          {selectedUser && (
+            <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50">
+              <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg max-w-lg">
+                <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+                  Foydalanuvchi test natijalari
+                </h2>
+                {loading ? (
+                  <p>Yuklanmoqda...</p>
+                ) : (
+                  <ul className="mt-4">
+                    {userResults.length > 0 ? (
+                      userResults.map((result, index) => (
+                        <li
+                          key={index}
+                          className="py-2 border-b border-gray-200 dark:border-gray-700"
+                        >
+                          <p className="text-sm text-gray-700 dark:text-gray-300">
+                            <strong>Test:</strong> {result.testTitle} (
+                            {result.categoryTitle})
+                          </p>
+                          <p className="text-sm text-gray-700 dark:text-gray-300">
+                            <strong>Ball:</strong> {result.score}%
+                          </p>
+                          <p className="text-sm text-gray-700 dark:text-gray-300">
+                            <strong>Tugatilgan:</strong> {result.completedAt}
+                          </p>
+                        </li>
+                      ))
+                    ) : (
+                      <p>Test natijalari topilmadi</p>
+                    )}
+                  </ul>
+                )}
+                <button
+                  onClick={() => setSelectedUser(null)}
+                  className="mt-4 text-white bg-red-500 px-4 py-2 rounded"
+                >
+                  Yopish
+                </button>
               </div>
-            ))} */}
-          </div>
+            </div>
+          )}
         </div>
       </div>
     </>

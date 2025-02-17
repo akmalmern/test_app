@@ -19,7 +19,7 @@ const TestYechish = () => {
         // Backenddan kelgan `endTime` asosida qolgan vaqtni hisoblash
         const endTime = new Date(data.test.endTime);
         const currentTime = new Date();
-        const timeLeft = Math.max(0, endTime.getTime() - currentTime.getTime()); // Qolgan vaqt
+        const timeLeft = Math.max(0, endTime.getTime() - currentTime.getTime());
         setRemainingTime(timeLeft);
 
         if (timeLeft <= 0) {
@@ -84,8 +84,6 @@ const TestYechish = () => {
 
   return (
     <>
-      {/* ssssssssssssss */}
-
       <div className="p-4 sm:ml-64">
         <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14">
           <div className="container mx-auto p-6">
@@ -114,9 +112,6 @@ const TestYechish = () => {
                         key={index + 1}
                         className="flex items-center ml-4 space-x-3 text-gray-800 dark:text-gray-200"
                       >
-                        {/* <span className=" text-base">
-                          {String.fromCharCode(65 + index)}.
-                        </span> */}
                         <input
                           type="radio"
                           name={q.questionId}
@@ -146,9 +141,9 @@ const TestYechish = () => {
             {result && (
               <div className="mt-6 p-4 border rounded-lg bg-gray-100">
                 <h2 className="text-xl font-bold">Natija:</h2>
-                <p>Togri javoblar soni: {result.correctAnswers}</p>
-                <p>Umumiy savollar soni: {result.totalQuestions}</p>
-                <p>Umumiy savollar soni: {result.score}</p>
+                <p>Togri javoblar soni: {result.correctAnswers} ta</p>
+                <p>Umumiy savollar soni: {result.totalQuestions} ta</p>
+                <p>Foizda: {result.score} %</p>
               </div>
             )}
           </div>

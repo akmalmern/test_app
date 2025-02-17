@@ -9,10 +9,9 @@ const useAuth = () => {
 
   useEffect(() => {
     const userProfile = async () => {
-      const token = localStorage.getItem("token"); // Tokenni olish
+      const token = localStorage.getItem("token");
 
       if (!token) {
-        // Agar token mavjud bo'lmasa, login sahifasiga o'tish
         navigate("/login");
         return;
       }
@@ -24,8 +23,8 @@ const useAuth = () => {
         console.log(error);
         console.log(error);
         if (error.response?.status === 401) {
-          localStorage.removeItem("token"); // Tokenni o'chirish
-          navigate("/login"); // Agar 401 bo‘lsa, login sahifaga yo‘naltiramiz
+          localStorage.removeItem("token");
+          navigate("/login");
         }
         toast.error(error.response.data.error);
       }

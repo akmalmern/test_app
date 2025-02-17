@@ -5,7 +5,7 @@ const PrivateRoute = () => {
   const user = useAuth();
 
   if (user === null) {
-    return <p>Loading...</p>; // ⏳ Autentifikatsiya jarayonida kutish
+    return <p>Loading...</p>;
   }
 
   return user ? <Outlet /> : <Navigate to="/login" replace />;
@@ -15,7 +15,7 @@ const AdminRoute = () => {
   const user = useAuth();
 
   if (user === null) {
-    return <p>Loading...</p>; // ⏳ Autentifikatsiya jarayonida kutish
+    return <p>Loading...</p>;
   }
 
   return user && user.role === "admin" ? (

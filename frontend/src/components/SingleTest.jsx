@@ -10,7 +10,6 @@ const SingleTest = () => {
   const [result, setResult] = useState(null);
   const [remainingTime, setRemainingTime] = useState(null); // Qolgan vaqt
 
-  // Testni yuklash
   useEffect(() => {
     const fetchTest = async () => {
       try {
