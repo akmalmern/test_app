@@ -74,22 +74,73 @@ const deleteTest = async (req, res, next) => {
     next(new ErrorResponse(error.message, 500));
   }
 };
-
 const getUsers = async (req, res, next) => {
   try {
-    const users = await userModel.find();
-    if (!users) {
+    const page = parseInt(req.query.page) || 1; // URL'dan sahifa raqamini olish
+    const limit = parseInt(req.query.limit) || 30; // Nechta foydalanuvchi chiqarish
+    const skip = (page - 1) * limit;
+
+    // userName orqali qidiruv
+    const userNameQuery = req.query.userName
+      ? { userName: { $regex: req.query.userName, $options: "i" } }
+      : {};
+
+    const users = await userModel
+      .find(userNameQuery) // qidiruv shartini qo'shish
+      .select("userName email")
+      .skip(skip)
+      .limit(limit)
+      .lean();
+
+    const total = await userModel.countDocuments(userNameQuery); // qidiruvga mos ravishda jami foydalanuvchilar soni
+
+    if (!users || users.length === 0) {
       return next(new ErrorResponse("Foydalanuvchilar topilmadi", 404));
     }
+
     res.status(200).json({
       success: true,
       message: "Batcha foydalanuvchilar",
+      userlar: total,
+      page,
+      totalPages: Math.ceil(total / limit),
       users,
     });
   } catch (error) {
     next(new ErrorResponse(error.message, 500));
   }
 };
+
+// const getUsers = async (req, res, next) => {
+//   try {
+//     const page = parseInt(req.query.page) || 1; // URL'dan sahifa raqamini olish
+//     const limit = parseInt(req.query.limit) || 30; // Nechta foydalanuvchi chiqarish
+//     const skip = (page - 1) * limit;
+
+//     const users = await userModel
+//       .find()
+//       .select("userName email")
+//       .skip(skip)
+//       .limit(limit)
+//       .lean();
+
+//     const total = await userModel.countDocuments();
+
+//     if (!users) {
+//       return next(new ErrorResponse("Foydalanuvchilar topilmadi", 404));
+//     }
+//     res.status(200).json({
+//       success: true,
+//       message: "Batcha foydalanuvchilar",
+//       userlar: total,
+//       page,
+//       totalPages: Math.ceil(total / limit),
+//       users,
+//     });
+//   } catch (error) {
+//     next(new ErrorResponse(error.message, 500));
+//   }
+// };
 const deleteUser = async (req, res, next) => {
   try {
     const id = req.params.id;

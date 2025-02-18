@@ -6,37 +6,54 @@ import { useNavigate } from "react-router-dom";
 const AdminCategory = () => {
   const navigate = useNavigate();
   const [categories, setCategories] = useState([]);
-  // modalni yopish
   const [isOpen, setIsOpen] = useState(false);
+  // paginate qismi.
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const limit = 30;
 
-  const Categorys = async () => {
+  const Categorys = async (page) => {
     try {
-      const { data } = await api.get("/category/categories");
+      const { data } = await api.get(
+        `/category/categories?page=${page}&limit=${limit}`
+      );
       if (data.success) {
         setCategories(data.categories);
+        setTotalPages(data.totalPages);
       }
     } catch (error) {
       toast.error(error.response.data.error);
     }
   };
+  const handlePrev = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleNext = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   useEffect(() => {
-    Categorys();
-  }, []);
+    Categorys(currentPage);
+  }, [currentPage]);
 
   // categoriye qo'shish
   const [name, setName] = useState("");
-  const [title, setTitle] = useState("");
   const [daraja, setDaraja] = useState("");
   const addCategory = async (e) => {
     e.preventDefault();
-    if (!name || !title || !daraja) {
+    if (!name || !daraja) {
       toast.error("Barcha maydonlarni to‘ldiring!");
       return;
     }
     try {
       const { data } = await api.post("/category/create-category", {
         name,
-        title,
         daraja,
       });
       if (data.success) {
@@ -44,7 +61,6 @@ const AdminCategory = () => {
         toast.success(data.message);
         setIsOpen(false); // Modalni yopish
         setName(""); // Forma inputlarini tozalash
-        setTitle("");
         setDaraja("");
       }
     } catch (error) {
@@ -69,7 +85,6 @@ const AdminCategory = () => {
   const [selectedCategory, setSelectedCategory] = useState({
     id: "",
     name: "",
-    title: "",
     daraja: "",
   });
 
@@ -77,7 +92,6 @@ const AdminCategory = () => {
     setSelectedCategory({
       id: cat._id,
       name: cat.name,
-      title: cat.title,
       daraja: cat.daraja,
     });
     setIsEditMode(true);
@@ -88,7 +102,6 @@ const AdminCategory = () => {
     try {
       const { data } = await api.put(`/category/edit/${selectedCategory.id}`, {
         name: selectedCategory.name,
-        title: selectedCategory.title,
         daraja: selectedCategory.daraja,
       });
       if (data.success) {
@@ -113,7 +126,7 @@ const AdminCategory = () => {
               >
                 {` Kategoriya qo'shish`}
               </button>
-              Categoriyalar Soni: {categories.length} ta
+              Categoriyalar Soni: {categories.categoriyalar_soni} ta
             </div>
             <div className="flex items-center justify-center h-24 rounded bg-gray-50 dark:bg-gray-800">
               <p className="text-2xl text-gray-400 dark:text-gray-500">s</p>
@@ -222,25 +235,48 @@ const AdminCategory = () => {
                     <p className="leading-relaxed text-base text-white dark:text-gray-300">
                       {cat.title}
                     </p>
-
-                    <button className="mt-3 text-black dark:text-white hover:text-blue-600 inline-flex items-center">
-                      catni boshlash
-                      <svg
-                        fill="none"
-                        stroke="currentColor"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        className="w-4 h-4 ml-2"
-                        viewBox="0 0 24 24"
-                      >
-                        <path d="M5 12h14M12 5l7 7-7 7"></path>
-                      </svg>
-                    </button>
                   </div>
                 </div>
               </div>
             ))}
+          </div>
+          {/* pagination */}
+          {/* Pagination - alohida komponent o'rniga shu joyda */}
+
+          {/* Pagination - ixchamlashtirilgan */}
+          <div className="flex flex-col items-center">
+            {/* Help text */}
+            <span className="text-sm text-gray-700 dark:text-gray-400">
+              <span className="font-semibold text-gray-900 dark:text-black">
+                {(currentPage - 1) * limit + 1}
+              </span>{" "}
+              dan{" "}
+              <span className="font-semibold text-gray-900 dark:text-black">
+                {Math.min(currentPage * limit)}
+              </span>{" "}
+              gacha{" "}
+              <span className="font-semibold text-gray-900 dark:text-black">
+                {} {/* Total count */}
+              </span>{" "}
+            </span>
+
+            {/* Buttons */}
+            <div className="inline-flex mt-2 xs:mt-0">
+              <button
+                onClick={handlePrev}
+                disabled={currentPage === 1}
+                className="flex items-center justify-center px-4 h-10 text-base font-medium text-white bg-gray-800 rounded-s hover:bg-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+              >
+                Prev
+              </button>
+              <button
+                onClick={handleNext}
+                disabled={currentPage === totalPages}
+                className="flex items-center justify-center px-4 h-10 text-base font-medium text-white bg-gray-800 border-0 border-s border-gray-700 rounded-e hover:bg-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+              >
+                Next
+              </button>
+            </div>
           </div>
           {/* modal */}
 
@@ -286,27 +322,6 @@ const AdminCategory = () => {
                                 })
                               : setName(e.target.value)
                           }
-                          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                          placeholder="Type product name"
-                          required
-                        />
-                      </div>
-                      <div className="col-span-2">
-                        <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                          Title
-                        </label>
-                        <input
-                          value={isEditMode ? selectedCategory.title : title}
-                          onChange={(e) =>
-                            isEditMode
-                              ? setSelectedCategory({
-                                  ...selectedCategory,
-                                  title: e.target.value,
-                                })
-                              : setTitle(e.target.value)
-                          }
-                          type="text"
-                          name="title"
                           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                           placeholder="Type product name"
                           required

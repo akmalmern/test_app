@@ -43,34 +43,4 @@ api.interceptors.response.use(
   }
 );
 
-// api.interceptors.response.use(
-//   (response) => response,
-//   async (error) => {
-//     const originalRequest = error.config;
-//     if (error.response.status === 401 && !originalRequest._retry) {
-//       originalRequest._retry = true;
-//       try {
-//         const refreshResponse = await api.post('/refresh_token'); // Refresh token so'rovi
-//         const { accessToken } = refreshResponse.data;
-
-//         localStorage.setItem('accessToken', accessToken); // LocalStorage ga saqlash
-//         api.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`; // Header ga qo'shish
-//         originalRequest.headers['Authorization'] = `Bearer ${accessToken}`; // Qayta so'rov uchun
-
-//         return api(originalRequest); // Qayta so'rov
-//       } catch (err) {
-//         // Refresh token ishlamasa yoki muddati tugagan bo'lsa
-//         localStorage.removeItem('accessToken');
-//         // Login sahifasiga yo'naltirish
-//         window.location.href = '/login';
-//         toast.error("Iltimos, qayta kiring!");
-//         return Promise.reject(err);
-//       }
-//     }
-//     return Promise.reject(error);
-//   }
-// );
-
-// // ... Komponentlarda api dan foydalanish
-
 export default api; // axios instance'ni eksport qilish

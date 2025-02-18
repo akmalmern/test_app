@@ -9,6 +9,7 @@ const userSchema = new mongoose.Schema(
     },
     email: {
       type: String,
+      index: true,
       required: [true, "E-mailingizni kiritishjingiz shart"],
       match: [
         /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,

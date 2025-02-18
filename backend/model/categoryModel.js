@@ -6,10 +6,6 @@ const categorySchema = new mongoose.Schema(
       type: String,
       required: [true, "categoriyani kiritishingiz shart"],
     },
-    title: {
-      type: String,
-      required: [true, "test titlesini kiritishingiz shart"],
-    },
 
     daraja: {
       type: String,

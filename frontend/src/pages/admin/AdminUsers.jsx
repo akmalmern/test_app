@@ -4,12 +4,37 @@ import { toast } from "react-toastify";
 
 const AdminUsers = () => {
   const [users, setUsers] = useState([]);
-  console.log(users);
-  const getUsers = async () => {
+  const [userLength, setUserLength] = useState(0);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  // paginate qismi.
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const limit = 30;
+  const handlePrev = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleNext = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+  const getUsers = async (page, query = "") => {
     try {
-      const { data } = await api.get("/users");
+      const { data } = await api.get(`/users`, {
+        params: {
+          page,
+          limit,
+          userName: query, // Foydalanuvchi nomi bo‘yicha qidiruv
+        },
+      });
       if (data.success) {
+        setUserLength(data.userlar);
         setUsers(data.users);
+        setTotalPages(data.totalPages);
       }
     } catch (error) {
       console.log(error);
@@ -18,8 +43,8 @@ const AdminUsers = () => {
   };
 
   useEffect(() => {
-    getUsers();
-  }, []);
+    getUsers(currentPage);
+  }, [currentPage]);
 
   // delete user
   const deleteUser = async (id) => {
@@ -33,6 +58,20 @@ const AdminUsers = () => {
       toast.error(error.response.data.error);
     }
   };
+  // //  Foydalanuvchini o‘chirish (re-fetch o‘rniga filter ishlatish)
+  // const deleteUser = async (id) => {
+  //   try {
+  //     const { data } = await api.delete(`user/delete/${id}`);
+  //     if (data.success) {
+  //       setUsers((prevUsers) => prevUsers.filter((user) => user._id !== id));
+  //       setUserLength((prevTotal) => prevTotal - 1); //  O‘chirgandan keyin sonni kamaytirish
+  //       toast.success(data.message);
+  //     }
+  //   } catch (error) {
+  //     console.error("Xatolik foydalanuvchini o‘chirishda:", error);
+  //   }
+  // };
+
   // user test results
   const [selectedUser, setSelectedUser] = useState(null);
   const [userResults, setUserResults] = useState([]);
@@ -45,7 +84,7 @@ const AdminUsers = () => {
       setUserResults(data.results);
       setSelectedUser(id);
     } catch (error) {
-      toast.error("Natijalarni olishda xatolik: " + error.response.data.error);
+      toast.error(error.response.data.error);
     } finally {
       setLoading(false);
     }
@@ -56,7 +95,7 @@ const AdminUsers = () => {
         <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14">
           <div className="grid grid-cols-3 gap-4 mb-4">
             <div className="flex items-center text-white justify-center h-24 rounded bg-gray-50 dark:bg-gray-800 ">
-              <h1>Barcha foydalanuvchilar</h1>/<h1> {users.length} ta</h1>
+              <h1>Barcha foydalanuvchilar</h1>/<h1> {userLength} ta</h1>
             </div>
             <div className="flex items-center justify-center h-24 rounded bg-gray-50 dark:bg-gray-800">
               <p className="text-2xl text-gray-400 dark:text-gray-500">
@@ -107,7 +146,7 @@ const AdminUsers = () => {
                   type="button"
                 >
                   <span className="sr-only">Action button</span>
-                  Action
+                  {`Top O'quvchilar`}
                   <svg
                     className="w-2.5 h-2.5 ms-2.5"
                     aria-hidden="true"
@@ -137,7 +176,7 @@ const AdminUsers = () => {
                         href="#"
                         className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                       >
-                        Reward
+                        Eng kop test yechgan top 10 talik
                       </a>
                     </li>
                     <li>
@@ -145,7 +184,7 @@ const AdminUsers = () => {
                         href="#"
                         className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                       >
-                        Promote
+                        Eng kop test yechgan top 20 talik
                       </a>
                     </li>
                     <li>
@@ -153,19 +192,14 @@ const AdminUsers = () => {
                         href="#"
                         className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                       >
-                        Activate account
+                        Eng kop test yechgan top 30 talik
                       </a>
                     </li>
                   </ul>
-                  <div className="py-1">
-                    <a
-                      href="#"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
-                    >
-                      Delete User
-                    </a>
-                  </div>
                 </div>
+              </div>
+              <div>
+                <input type="date" />
               </div>
               <label htmlFor="table-search" className="sr-only">
                 Search
@@ -188,8 +222,14 @@ const AdminUsers = () => {
                     />
                   </svg>
                 </div>
+
                 <input
                   type="text"
+                  value={searchQuery}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    getUsers(1, e.target.value); // Qidiruvga mos ma’lumotlarni olish
+                  }}
                   htmlFor="table-search-users"
                   className="block p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   placeholder="Search for users"
@@ -202,9 +242,7 @@ const AdminUsers = () => {
                   <th scope="col" className="px-6 py-3">
                     Name
                   </th>
-                  <th scope="col" className="px-6 py-3">
-                    Role
-                  </th>
+
                   <th scope="col" className="px-6 py-3">
                     Natijalar
                   </th>
@@ -246,7 +284,7 @@ const AdminUsers = () => {
                         </div>
                       </div>
                     </th>
-                    <td className="px-6 py-4">{user.role}</td>
+
                     <td className="px-6 py-4">
                       <button
                         onClick={() => getUserResults(user._id)}
@@ -267,6 +305,41 @@ const AdminUsers = () => {
                 ))}
               </tbody>
             </table>
+            {/* Pagination - ixchamlashtirilgan */}
+            <div className="flex flex-col items-center">
+              {/* Help text */}
+              <span className="text-sm text-gray-700 dark:text-gray-400">
+                <span className="font-semibold text-gray-900 dark:text-black">
+                  {(currentPage - 1) * limit + 1}
+                </span>{" "}
+                dan{" "}
+                <span className="font-semibold text-gray-900 dark:text-black">
+                  {Math.min(currentPage * limit)}
+                </span>{" "}
+                gacha{" "}
+                <span className="font-semibold text-gray-900 dark:text-black">
+                  {} {/* Total count */}
+                </span>{" "}
+              </span>
+
+              {/* Buttons */}
+              <div className="inline-flex mt-2 xs:mt-0">
+                <button
+                  onClick={handlePrev}
+                  disabled={currentPage === 1}
+                  className="flex items-center justify-center px-4 h-10 text-base font-medium text-white bg-gray-800 rounded-s hover:bg-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                >
+                  Prev
+                </button>
+                <button
+                  onClick={handleNext}
+                  disabled={currentPage === totalPages}
+                  className="flex items-center justify-center px-4 h-10 text-base font-medium text-white bg-gray-800 border-0 border-s border-gray-700 rounded-e hover:bg-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
           </div>
           {selectedUser && (
             <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50">

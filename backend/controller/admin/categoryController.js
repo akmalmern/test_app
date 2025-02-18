@@ -3,11 +3,11 @@ const ErrorResponse = require("../../utils/errorResponse");
 
 const addCategory = async (req, res, next) => {
   try {
-    const { name, title, daraja } = req.body;
-    if (!name || !title) {
+    const { name, daraja } = req.body;
+    if (!name || !daraja) {
       return next(new ErrorResponse("maydonni to'liq to'ldiring!", 400));
     }
-    const category = await categoryModel.create({ name, title, daraja });
+    const category = await categoryModel.create({ name, daraja });
     res.status(201).json({
       success: true,
       message: "category qo'shildi",
@@ -27,13 +27,29 @@ const addCategory = async (req, res, next) => {
 
 const getCategory = async (req, res, next) => {
   try {
-    const categories = await categoryModel.find();
-    if (!categories) {
+    const page = parseInt(req.query.page) || 1; // URL'dan sahifa raqamini olish
+    const limit = parseInt(req.query.limit) || 30; // Nechta foydalanuvchi chiqarish
+    const skip = (page - 1) * limit;
+
+    const categories = await categoryModel
+      .find()
+      .find()
+      .select("name  daraja")
+      .skip(skip)
+      .limit(limit)
+      .lean();
+
+    const total = await categoryModel.countDocuments();
+
+    if (!categories || categories.length === 0) {
       return next(new ErrorResponse("categoriyalar topilmadi", 404));
     }
     res.status(200).json({
       success: true,
-      message: "Tzimda mavjud categoriyalar",
+      message: "Batcha categoriyalar",
+      page,
+      totalPages: Math.ceil(total / limit),
+      categoriyalar_soni: total,
       categories,
     });
   } catch (error) {

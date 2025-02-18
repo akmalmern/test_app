@@ -69,6 +69,42 @@ const signUp = async (req, res, next) => {
   }
 };
 
+// const signUp = async (req, res, next) => {
+//   try {
+//     let users = [];
+//     let bulkUsers = [];
+
+//     for (let i = 9950; i < 20000; i++) {
+//       let userName = `user${i}`;
+//       let email = `user${i}@example.com`;
+//       let password = `Password${i}!`;
+//       let role = "user";
+//       let image = null;
+
+//       bulkUsers.push({ userName, email, password, image, role });
+//     }
+
+//     // Faqat unikal email'lar qo'shilsin
+//     const existingEmails = await userModel
+//       .find({ email: { $in: bulkUsers.map((u) => u.email) } })
+//       .select("email");
+//     const existingEmailSet = new Set(existingEmails.map((u) => u.email));
+//     const newUsers = bulkUsers.filter((u) => !existingEmailSet.has(u.email));
+
+//     if (newUsers.length > 0) {
+//       users = await userModel.insertMany(newUsers);
+//     }
+
+//     res.status(201).json({
+//       success: true,
+//       message: `${newUsers.length} ta foydalanuvchi yaratildi`,
+//       users,
+//     });
+//   } catch (error) {
+//     next(new ErrorResponse(error.message, 500));
+//   }
+// };
+
 const signIn = async (req, res, next) => {
   try {
     const { email, password } = req.body;
