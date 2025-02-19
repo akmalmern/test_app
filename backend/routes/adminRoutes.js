@@ -8,6 +8,7 @@ const {
   getUsers,
   deleteUser,
   AdminGetUserResult,
+  getUsersByTest,
 } = require("../controller/admin/adminController");
 const { isAuthenticated, isAdmin } = require("../middlware/isAuth");
 
@@ -27,4 +28,5 @@ router.get(
   isAdmin,
   AdminGetUserResult
 );
+router.get("/test-users/:testId", isAuthenticated, isAdmin, getUsersByTest);
 module.exports = router;

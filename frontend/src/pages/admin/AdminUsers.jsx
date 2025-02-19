@@ -58,19 +58,6 @@ const AdminUsers = () => {
       toast.error(error.response.data.error);
     }
   };
-  // //  Foydalanuvchini o‘chirish (re-fetch o‘rniga filter ishlatish)
-  // const deleteUser = async (id) => {
-  //   try {
-  //     const { data } = await api.delete(`user/delete/${id}`);
-  //     if (data.success) {
-  //       setUsers((prevUsers) => prevUsers.filter((user) => user._id !== id));
-  //       setUserLength((prevTotal) => prevTotal - 1); //  O‘chirgandan keyin sonni kamaytirish
-  //       toast.success(data.message);
-  //     }
-  //   } catch (error) {
-  //     console.error("Xatolik foydalanuvchini o‘chirishda:", error);
-  //   }
-  // };
 
   // user test results
   const [selectedUser, setSelectedUser] = useState(null);

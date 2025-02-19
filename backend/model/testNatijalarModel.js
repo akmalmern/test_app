@@ -30,7 +30,7 @@ const userTestResultSchema = new mongoose.Schema(
     isCompleted: { type: Boolean, default: false }, // Test yakunlanganligini bildiradi
     isTestboshlash: { type: Boolean, default: false }, // Test yakunlanganligini bildiradi
   },
-  { timestamps: true } // createdAt va updatedAt avtomatik maydonlari
+  { timestamps: true }
 );
 
 module.exports = mongoose.model("UserTestResult", userTestResultSchema);

@@ -23,6 +23,7 @@ const OfflinePage = () => (
   </div>
 );
 function App() {
+  const location = useLocation();
   // internet o'chib qolsa chiqadigan sahifalar uchun
   const [isOnline, setIsOnline] = useState(navigator.onLine);
 
@@ -42,8 +43,6 @@ function App() {
   if (!isOnline) {
     return <OfflinePage />;
   }
-
-  const location = useLocation(); // 📌 Joriy sahifani aniqlash
 
   // 📌 Agar sahifa "/login" yoki "/register" bo‘lsa, Navbar ko‘rinmaydi
   const hideNavbar =

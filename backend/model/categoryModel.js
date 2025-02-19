@@ -10,10 +10,10 @@ const categorySchema = new mongoose.Schema(
     daraja: {
       type: String,
       enum: {
-        values: ["oson", "o'rta", "qiyin"], // Faqat ruxsat etilgan qiymatlar
-        message: "Daraja faqat 'oson', 'o'rta', yoki 'qiyin' bo'lishi mumkin", // Maxsus xabar
+        values: ["oson", "o'rta", "qiyin"],
+        message: "Daraja faqat 'oson', 'o'rta', yoki 'qiyin' bo'lishi mumkin",
       },
-      required: true, // Daraja majburiy bo‘lsin
+      required: true,
     },
   },
   { timestamps: true }

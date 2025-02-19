@@ -10,9 +10,6 @@ const {
 } = require("../controller/userController");
 const { isAuthenticated } = require("../middlware/isAuth");
 
-const User = require("../model/userModel");
-const Test = require("../model/testModel");
-const UserTestResult = require("../model/testNatijalarModel");
 const {
   AllTests,
   getTestCategory,

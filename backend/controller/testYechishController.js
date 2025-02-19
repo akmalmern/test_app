@@ -2,7 +2,6 @@ const testModel = require("../model/testModel");
 const ErrorResponse = require("../utils/errorResponse");
 const UserTestResult = require("../model/testNatijalarModel");
 
-// Barcha testlarni va savollarni olish
 const AllTests = async (req, res, next) => {
   try {
     const tests = await testModel
@@ -20,19 +19,12 @@ const AllTests = async (req, res, next) => {
       message: "Barcha testlar va savollar ro'yxati",
       testlar_soni,
       tests,
-      // tests: tests.map((test) => ({
-      //   id: test.id,
-      //   title: test.title,
-      //   category: test.category,
-      //   questions: test.questions.length,
-      // })),
     });
   } catch (error) {
     next(new ErrorResponse(error.message, 500));
   }
 };
 
-// testni katego'ryasi bo'yicha ko'rish
 const getTestCategory = async (req, res, next) => {
   try {
     const { category } = req.params;
@@ -127,7 +119,6 @@ const TestYakunlash = async (req, res, next) => {
           answer,
         }));
 
-    // Test va foydalanuvchi natijasini topamiz
     const test = await testModel.findById(testId);
     if (!test) {
       return next(new ErrorResponse("Test topilmadi", 404));
@@ -240,16 +231,10 @@ const userTestsResult = async (req, res, next) => {
         select: "title categoryId",
         populate: {
           path: "categoryId",
-          select: "name title daraja",
+          select: "name  daraja",
         },
       })
       .sort({ date: -1 });
-    console.log(
-      results.map((r) => ({
-        testId: r.testId,
-        categoryId: r.testId?.categoryId,
-      }))
-    );
 
     if (!results || results.length === 0) {
       return next(new ErrorResponse("Natijalar topilmadi", 404));
@@ -258,7 +243,7 @@ const userTestsResult = async (req, res, next) => {
     res.status(200).json({
       message: "Foydalanuvchi test natijalari",
       yechganTestlarSoni: results.length,
-      // results,
+
       results: results
         .filter((result) => result.testId) // testId null bo‘lsa, natijadan chiqarib tashlaymiz
         .map((result) => ({

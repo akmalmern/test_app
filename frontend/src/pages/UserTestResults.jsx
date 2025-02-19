@@ -4,13 +4,11 @@ import { toast } from "react-toastify";
 
 const UserTestResults = () => {
   const [results, setResults] = useState([]);
-  console.log(results);
   const getResults = async () => {
     try {
       const { data } = await api.get("/results");
       setResults(data.results);
     } catch (error) {
-      console.log(error);
       toast.error(error.response.data.error);
     }
   };
@@ -40,7 +38,6 @@ const UserTestResults = () => {
                   d="M9 1v16M1 9h16"
                 />
               </svg>
-              555555555
             </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-4 mb-4">

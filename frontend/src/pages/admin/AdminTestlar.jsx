@@ -195,6 +195,9 @@ const AdminTestlar = () => {
                   <th scope="col" className="px-6 py-3">
                     Savollar soni
                   </th>
+                  <th scope="col" className="px-6 py-3">
+                    {`Test ishlagan o'quvchilar`}
+                  </th>
 
                   <th scope="col" className="px-6 py-3">
                     Taxrirlash
@@ -248,6 +251,9 @@ const AdminTestlar = () => {
                     </td>
                     <td className="px-6 py-4">{test.duration} daqiqa</td>
                     <td className="px-6 py-4">{test.savollar_soni} ta</td>
+                    <td className="px-6 py-4">
+                      <button className="btn">Test ishlaganlar</button>
+                    </td>
                     <td className="px-6 py-4">
                       <Link
                         to={`/admin/edit-test/${test._id}`}

@@ -27,12 +27,11 @@ const addCategory = async (req, res, next) => {
 
 const getCategory = async (req, res, next) => {
   try {
-    const page = parseInt(req.query.page) || 1; // URL'dan sahifa raqamini olish
-    const limit = parseInt(req.query.limit) || 30; // Nechta foydalanuvchi chiqarish
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 30;
     const skip = (page - 1) * limit;
 
     const categories = await categoryModel
-      .find()
       .find()
       .select("name  daraja")
       .skip(skip)
@@ -46,7 +45,7 @@ const getCategory = async (req, res, next) => {
     }
     res.status(200).json({
       success: true,
-      message: "Batcha categoriyalar",
+      message: "BaRcha categoriyalar",
       page,
       totalPages: Math.ceil(total / limit),
       categoriyalar_soni: total,

@@ -27,8 +27,8 @@ const userSchema = new mongoose.Schema(
     role: {
       type: String,
       enum: {
-        values: ["user", "admin"], // Faqat ruxsat etilgan qiymatlar
-        message: "role faqat 'user', yoki 'admin' bo'lishi mumkin", // Maxsus xabar
+        values: ["user", "admin"],
+        message: "role faqat 'user', yoki 'admin' bo'lishi mumkin",
       },
       default: "user",
     },

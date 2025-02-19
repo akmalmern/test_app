@@ -19,23 +19,19 @@ api.interceptors.response.use(
 
       try {
         // Refresh token orqali yangi token olish
-        await axios.post(
+        const { data } = await axios.post(
           "http://localhost:5000/refresh-token",
           {},
           { withCredentials: true }
         );
-        // const { accessToken } = refreshResponse.data;
-
-        //         localStorage.setItem('accessToken', accessToken); // LocalStorage ga saqlash
-
+        console.log("ddata1", data);
         return api(originalRequest); // Asliy so'rovni qayta yuborish
       } catch (refreshError) {
         // Agar refresh ham muvaffaqiyatsiz bo'lsa
-        toast.error("Sessiya tugadi. Qaytadan login qiling!"); // Xato xabarini ko'rsatish
+        console.error("Refresh token xatosi:", refreshError);
+        toast.error(refreshError.response.data.error); // Xato xabarini ko'rsatish
         localStorage.removeItem("accessToken");
-        //         // Login sahifasiga yo'naltirish
-        //         window.location.href = '/login';
-        //         toast.error("Iltimos, qayta kiring!");
+
         window.location.href = "/login"; // Login sahifasiga yo‘naltirish
       }
     }

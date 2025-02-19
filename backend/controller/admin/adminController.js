@@ -213,6 +213,46 @@ const AdminGetUserResult = async (req, res, next) => {
     next(new ErrorResponse("Server xatosi", 500));
   }
 };
+// Testni ustiga bosganda o'sha testni ishlagan userlarni chiqarish
+const getUsersByTest = async (req, res, next) => {
+  try {
+    const { testId } = req.params;
+    const test = await testModel.findById(testId);
+    if (!test) {
+      return next(new ErrorResponse("Test topilmadi", 404));
+    }
+
+    //  ishlagan foydalanuvchilarni olish
+    const userResults = await UserTestResult.find({ testId })
+      .populate({
+        path: "userId", // Foydalanuvchini populate qilamiz
+        select: "userName email", // Foydalanuvchi haqida kerakli ma'lumotlar
+      })
+      .sort({ date: -1 }); // Eng so‘nggi natijalarni olish
+
+    if (!userResults || userResults.length === 0) {
+      return next(new ErrorResponse("Testni hech kim ishlamagan", 404));
+    }
+
+    // Foydalanuvchilarning natijalarini qaytarish
+    res.status(200).json({
+      success: true,
+      message: "Testni ishlagan foydalanuvchilar ro'yxati",
+      testTitle: test.title,
+      users: userResults.map((result) => ({
+        userName: result.userId.userName,
+        email: result.userId.email,
+        score: ((result.correctAnswers / result.totalQuestions) * 100).toFixed(
+          2
+        ), // Natijani foizda hisoblash
+        completedAt: new Date(result.completedAt).toLocaleString(), // Testni tugatgan vaqt
+      })),
+    });
+  } catch (error) {
+    console.error("Xatolik:", error);
+    next(new ErrorResponse("Server xatosi", 500));
+  }
+};
 
 module.exports = {
   createTest,
@@ -221,4 +261,5 @@ module.exports = {
   getUsers,
   deleteUser,
   AdminGetUserResult,
+  getUsersByTest,
 };

@@ -14,14 +14,11 @@ dataDB();
 app.use(express.json());
 app.use(cookieParser());
 
-// uploads papkasini statik fayl sifatida taqdim etish
-// app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-// CORS sozlamalari
 app.use(
   cors({
-    origin: "http://localhost:5173", // Frontend URL (Vite bilan ishlayotgan bo'lsangiz)
-    credentials: true, // Cookie'larni uzatishga ruxsat beradi
+    origin: "http://localhost:5173",
+    credentials: true,
   })
 );
 // *****

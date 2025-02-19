@@ -21,16 +21,15 @@ const useAuth = () => {
         setUser(data.user);
       } catch (error) {
         console.log(error);
-        console.log(error);
-        if (error.response?.status === 401) {
+        if (error.response?.status === 401 || error.response?.status === 500) {
           localStorage.removeItem("token");
           navigate("/login");
         }
-        toast.error(error.response.data.error);
+        toast.error(error.response?.data?.error);
       }
     };
     userProfile();
-  }, []);
+  }, [navigate]);
 
   return user;
 };
