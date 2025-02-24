@@ -9,7 +9,6 @@ const AdminTestlar = () => {
     try {
       const { data } = await api.get("/all-tests");
       setTestlar(data.tests);
-      console.log(data.tests);
     } catch (error) {
       toast.error(error.response.data.error);
     }
@@ -57,7 +56,6 @@ const AdminTestlar = () => {
                     d="M9 1v16M1 9h16"
                   />
                 </svg>
-                +55555555555555555555555
               </p>
             </div>
             <div className="flex items-center justify-center h-24 rounded bg-gray-50 dark:bg-gray-800">

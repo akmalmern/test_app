@@ -11,7 +11,6 @@ const isAuthenticated = async (req, res, next) => {
     }
 
     const decoded = jwt.verify(accessToken, process.env.JWT_ACCESS_TOKEN);
-    console.log(decoded);
     req.user = await userModel.findById(decoded.id);
     if (!req.user) {
       return next(new ErrorResponse("Foydalanuvchi topilmadi", 404));
@@ -19,10 +18,8 @@ const isAuthenticated = async (req, res, next) => {
 
     next();
   } catch (error) {
-    console.log("auth xatosi", error);
-    console.log("auth xatosi", error.name);
-    console.log("auth xatosi", error.message);
     if (error.name === "TokenExpiredError" || error.message === "jwt expired") {
+      res.clearCookie("accessToken");
       return next(new ErrorResponse("Token muddati tugagan.", 401));
     }
 
@@ -50,6 +47,7 @@ const isAdmin = async (req, res, next) => {
     next();
   } catch (error) {
     if (error.name === "TokenExpiredError") {
+      res.clearCookie("accessToken");
       return next(new ErrorResponse("Token muddati tugagan", 401)); // 401 qaytariladi
     }
 
