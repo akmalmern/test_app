@@ -30,10 +30,25 @@ const AdminTestlar = () => {
       toast.error(error.response.data.error);
     }
   };
+
+  // Test ishlagan foydalanuvchilarni olish
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedTestUsers, setSelectedTestUsers] = useState([]);
+  const [selectedTestTitle, setSelectedTestTitle] = useState("");
+  const fetchTestUsers = async (testId, testTitle) => {
+    try {
+      const { data } = await api.get(`/test-users/${testId}`);
+      setSelectedTestUsers(data.users);
+      setSelectedTestTitle(testTitle);
+      setModalOpen(true);
+    } catch (error) {
+      toast.error(error.response?.data?.error || "Xatolik yuz berdi");
+    }
+  };
   return (
     <>
       <div className="p-4 sm:ml-64">
-        <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14">
+        <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14 ">
           <div className="grid grid-cols-3 gap-4 mb-4">
             <div className="flex items-center justify-center h-24 rounded bg-gray-50 dark:bg-gray-800 ">
               {/* <h1>{message}</h1>
@@ -250,7 +265,12 @@ const AdminTestlar = () => {
                     <td className="px-6 py-4">{test.duration} daqiqa</td>
                     <td className="px-6 py-4">{test.savollar_soni} ta</td>
                     <td className="px-6 py-4">
-                      <button className="btn">Test ishlaganlar</button>
+                      <button
+                        className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+                        onClick={() => fetchTestUsers(test._id, test.title)}
+                      >
+                        Test ishlaganlar
+                      </button>
                     </td>
                     <td className="px-6 py-4">
                       <Link
@@ -272,6 +292,40 @@ const AdminTestlar = () => {
                 ))}
               </tbody>
             </table>
+            {/* Modal oyna */}
+            {modalOpen && (
+              <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">
+                <div className="bg-white rounded-lg shadow-lg p-6 w-96">
+                  <h2 className="text-lg font-semibold mb-4">
+                    {selectedTestTitle} Testi Ishlaganlar
+                  </h2>
+                  {selectedTestUsers.length > 0 ? (
+                    <ul className="space-y-2">
+                      {selectedTestUsers.map((user, index) => (
+                        <li key={index + 1} className="border-b py-2">
+                          {user.userName} ({user.email}) <br /> ishlagan vaqti{" "}
+                          {user.completedAt}
+                          <br />
+                          {user.correctAnswers} {`ta to'g'ri javob`}
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="text-gray-500">
+                      Hali hech kim bu testni ishlamagan.
+                    </p>
+                  )}
+                  <div className="flex justify-end mt-4">
+                    <button
+                      className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                      onClick={() => setModalOpen(false)}
+                    >
+                      Yopish
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

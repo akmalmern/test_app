@@ -242,6 +242,7 @@ const getUsersByTest = async (req, res, next) => {
       users: userResults.map((result) => ({
         userName: result.userId.userName,
         email: result.userId.email,
+        correctAnswers: result.correctAnswers, // To'g'ri javoblar soni
         score: ((result.correctAnswers / result.totalQuestions) * 100).toFixed(
           2
         ), // Natijani foizda hisoblash

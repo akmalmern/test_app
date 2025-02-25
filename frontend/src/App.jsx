@@ -15,6 +15,7 @@ import { useEffect, useState } from "react";
 import "react-toastify/dist/ReactToastify.css";
 import AdminTestlar from "./pages/admin/AdminTestlar";
 import EditTest from "./pages/admin/EditTest";
+import "./index.css"; // yoki "./tailwind.css"
 
 const OfflinePage = () => (
   <div style={{ textAlign: "center", padding: "50px" }}>

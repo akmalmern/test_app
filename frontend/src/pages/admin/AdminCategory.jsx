@@ -10,6 +10,7 @@ const AdminCategory = () => {
   // paginate qismi.
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [categorySoni, setCategorySoni] = useState(0);
   const limit = 30;
 
   const Categorys = async (page) => {
@@ -20,6 +21,7 @@ const AdminCategory = () => {
       if (data.success) {
         setCategories(data.categories);
         setTotalPages(data.totalPages);
+        setCategorySoni(data.categoriyalar_soni);
       }
     } catch (error) {
       toast.error(error.response.data.error);
@@ -126,7 +128,7 @@ const AdminCategory = () => {
               >
                 {` Kategoriya qo'shish`}
               </button>
-              Categoriyalar Soni: {categories.categoriyalar_soni} ta
+              Categoriyalar Soni: {categorySoni} ta
             </div>
             <div className="flex items-center justify-center h-24 rounded bg-gray-50 dark:bg-gray-800">
               <p className="text-2xl text-gray-400 dark:text-gray-500">s</p>
@@ -240,8 +242,6 @@ const AdminCategory = () => {
               </div>
             ))}
           </div>
-          {/* pagination */}
-          {/* Pagination - alohida komponent o'rniga shu joyda */}
 
           {/* Pagination - ixchamlashtirilgan */}
           <div className="flex flex-col items-center">

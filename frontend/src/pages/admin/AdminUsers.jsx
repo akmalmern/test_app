@@ -81,7 +81,7 @@ const AdminUsers = () => {
       <div className="p-4 sm:ml-64">
         <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14">
           <div className="grid grid-cols-3 gap-4 mb-4">
-            <div className="flex items-center text-white justify-center h-24 rounded bg-gray-50 dark:bg-gray-800 ">
+            <div className="flex items-center text-black justify-center h-24 rounded bg-gray-50 dark:bg-gray-800 ">
               <h1>Barcha foydalanuvchilar</h1>/<h1> {userLength} ta</h1>
             </div>
             <div className="flex items-center justify-center h-24 rounded bg-gray-50 dark:bg-gray-800">
@@ -125,69 +125,6 @@ const AdminUsers = () => {
           </div>
           <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
             <div className="flex items-center justify-between flex-column flex-wrap md:flex-row space-y-4 md:space-y-0 pb-4 bg-white dark:bg-gray-900">
-              <div>
-                <button
-                  id="dropdownActionButton"
-                  data-dropdown-toggle="dropdownAction"
-                  className="inline-flex items-center text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-3 py-1.5 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
-                  type="button"
-                >
-                  <span className="sr-only">Action button</span>
-                  {`Top O'quvchilar`}
-                  <svg
-                    className="w-2.5 h-2.5 ms-2.5"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 10 6"
-                  >
-                    <path
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="m1 1 4 4 4-4"
-                    />
-                  </svg>
-                </button>
-                <div
-                  id="dropdownAction"
-                  className="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-gray-700 dark:divide-gray-600"
-                >
-                  <ul
-                    className="py-1 text-sm text-gray-700 dark:text-gray-200"
-                    aria-labelledby="dropdownActionButton"
-                  >
-                    <li>
-                      <a
-                        href="#"
-                        className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                      >
-                        Eng kop test yechgan top 10 talik
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        href="#"
-                        className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                      >
-                        Eng kop test yechgan top 20 talik
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        href="#"
-                        className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                      >
-                        Eng kop test yechgan top 30 talik
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-              <div>
-                <input type="date" />
-              </div>
               <label htmlFor="table-search" className="sr-only">
                 Search
               </label>

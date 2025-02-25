@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import api from "../api";
 import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
@@ -37,22 +37,10 @@ const Navbar = () => {
       toast.error(error.response?.data?.error || "Nomalum xato yuz berdi!");
     }
   };
-  const [isDark, setIsDark] = useState(
-    localStorage.getItem("theme") === "dark"
-  );
 
-  useEffect(() => {
-    if (isDark) {
-      document.documentElement.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-      localStorage.setItem("theme", "light");
-    }
-  }, [isDark]);
   return (
     <>
-      <nav className="fixed top-0 z-50 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
+      <nav className="fixed top-0 z-50 w-full bg-dark border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
         <div className="px-3 py-3 lg:px-5 lg:pl-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center justify-start rtl:justify-end">
@@ -91,14 +79,6 @@ const Navbar = () => {
               </a>
             </div>
             <div className="flex items-center relative">
-              <div>
-                <button
-                  onClick={() => setIsDark(!isDark)}
-                  className="px-4 py-2 bg-gray-300 dark:bg-gray-700 text-black dark:text-white rounded"
-                >
-                  {isDark ? "☀️ Light Mode" : "🌙 Dark Mode"}
-                </button>
-              </div>
               <div className="flex items-center ms-3">
                 <div>
                   <button
