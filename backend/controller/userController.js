@@ -3,7 +3,6 @@ const ErrorResponse = require("../utils/errorResponse");
 const jwt = require("jsonwebtoken");
 const signUp = async (req, res, next) => {
   const { userName, email, password, role } = req.body;
-  console.log(req.body);
 
   const userExist = await userModel.findOne({ email });
 

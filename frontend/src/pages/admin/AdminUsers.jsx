@@ -69,6 +69,7 @@ const AdminUsers = () => {
     try {
       const { data } = await api.get(`/user/user-results/${id}`);
       setUserResults(data.results);
+      console.log(data);
       setSelectedUser(id);
     } catch (error) {
       toast.error(error.response.data.error);
