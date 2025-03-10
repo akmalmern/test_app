@@ -36,6 +36,22 @@ const createTest = async (req, res, next) => {
   }
 };
 
+const getOneTest = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const test = await testModel.findById(id);
+    if (!test) {
+      return next(new ErrorResponse("Test topilmadi", 404));
+    }
+    res.status(200).json({
+      success: true,
+      test,
+    });
+  } catch (error) {
+    next(new ErrorResponse(error.message, 500));
+  }
+};
+
 const editTest = async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -49,6 +65,7 @@ const editTest = async (req, res, next) => {
     res.status(200).json({
       success: true,
       message: "Test Muvofaqiyatli o'zgartirildi",
+      test1,
     });
   } catch (error) {
     next(new ErrorResponse(error.message, 500));
@@ -257,6 +274,7 @@ const getUsersByTest = async (req, res, next) => {
 
 module.exports = {
   createTest,
+  getOneTest,
   deleteTest,
   editTest,
   getUsers,

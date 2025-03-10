@@ -269,7 +269,7 @@ const AdminTestlar = () => {
                         className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
                         onClick={() => fetchTestUsers(test._id, test.title)}
                       >
-                        Test ishlaganlar
+                        Testni ishlaganlar
                       </button>
                     </td>
                     <td className="px-6 py-4">
@@ -303,10 +303,15 @@ const AdminTestlar = () => {
                     <ul className="space-y-2">
                       {selectedTestUsers.map((user, index) => (
                         <li key={index + 1} className="border-b py-2">
-                          {user.userName} ({user.email}) <br /> ishlagan vaqti{" "}
-                          {user.completedAt}
+                          Ismi:{" "}
+                          <strong>
+                            {user.userName} ({user.email}){" "}
+                          </strong>
+                          <br /> ishlagan vaqti:{" "}
+                          <strong> {user.completedAt}</strong>
                           <br />
-                          {user.correctAnswers} {`ta to'g'ri javob`}
+                          {`to'g'ri javoblar soni:`}{" "}
+                          <strong>{user.correctAnswers} ta </strong>
                         </li>
                       ))}
                     </ul>

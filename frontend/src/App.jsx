@@ -53,19 +53,16 @@ function App() {
     <>
       <ToastContainer />
       {!hideNavbar && <Navbar />}{" "}
-      {/* ✅ Navbar faqat kerakli joylarda chiqadi */}
       <Routes>
-        {/* Login va Register */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        {/* Faqat login bo‘lgan userlar uchun */}
+
         <Route element={<PrivateRoute />}>
           <Route path="/" element={<Home />} />
           <Route path="/test/:testId" element={<TestYechish />} />
           <Route path="/results" element={<UserTestResult />} />
         </Route>
 
-        {/* Faqat admin uchun */}
         <Route element={<AdminRoute />}>
           <Route path="/admin" element={<CreateTest />} />
           <Route path="/admin/users" element={<AdminUsers />} />

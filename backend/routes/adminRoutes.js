@@ -9,11 +9,13 @@ const {
   deleteUser,
   AdminGetUserResult,
   getUsersByTest,
+  getOneTest,
 } = require("../controller/admin/adminController");
 const { isAuthenticated, isAdmin } = require("../middlware/isAuth");
 
 router.post("/create-test", isAuthenticated, isAdmin, createTest);
 
+router.get("/one-test/:id", isAuthenticated, isAdmin, getOneTest);
 // testni o'chirish
 router.delete("/delete/test/:testId", isAuthenticated, isAdmin, deleteTest);
 

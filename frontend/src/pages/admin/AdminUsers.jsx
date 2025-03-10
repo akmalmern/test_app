@@ -63,7 +63,7 @@ const AdminUsers = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [userResults, setUserResults] = useState([]);
   const [loading, setLoading] = useState(false);
-
+  console.log(userResults);
   const getUserResults = async (id) => {
     setLoading(true);
     try {
@@ -283,8 +283,14 @@ const AdminUsers = () => {
                           className="py-2 border-b border-gray-200 dark:border-gray-700"
                         >
                           <p className="text-sm text-gray-700 dark:text-gray-300">
-                            <strong>Test:</strong> {result.testTitle} (
-                            {result.categoryTitle})
+                            <strong>Test:</strong> {result.testTitle}
+                          </p>
+                          <p className="text-sm text-gray-700 dark:text-gray-300">
+                            <strong>Testlar soni:</strong>{" "}
+                            {result.totalQuestions} ta
+                          </p>
+                          <p className="text-sm text-gray-700 dark:text-gray-300">
+                            <strong>Darajasi:</strong> {result.daraja}
                           </p>
                           <p className="text-sm text-gray-700 dark:text-gray-300">
                             <strong>Ball:</strong> {result.score}%

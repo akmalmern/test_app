@@ -45,14 +45,20 @@ userSchema.pre("findOneAndDelete", async function (next) {
   next();
 });
 // encrypting password before saving
+
 userSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) {
+  if (!this.isModified("password")) return next(); // Parol o'zgarmagan bo‘lsa, davom etish
+
+  try {
+    const salt = await bcrypt.genSalt(10); // Tuz (salt) generatsiya qilish
+    this.password = await bcrypt.hash(this.password, salt);
     next();
+  } catch (error) {
+    next(error); // Xatolik bo‘lsa, uni next() orqali uzatish
   }
-  this.password = await bcrypt.hash(this.password, 15);
 });
 
-// verify password
+// login bn kirganda paro'lni solishtirish
 userSchema.methods.comparePassword = async function (yourPassword) {
   try {
     return await bcrypt.compare(yourPassword, this.password);

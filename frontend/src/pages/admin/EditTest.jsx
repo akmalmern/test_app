@@ -14,9 +14,11 @@ const EditTest = () => {
     const fetchTest = async () => {
       try {
         const { data } = await api.get(`/one-test/${id}`);
+        console.log(data);
         setTest(data.test);
         setQuestions(data.test.questions || []);
       } catch (error) {
+        console.log(error.response.data.error);
         toast.error(error.response?.data?.error || "Xatolik yuz berdi");
       }
     };

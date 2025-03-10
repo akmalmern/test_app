@@ -111,7 +111,7 @@ const UserTestResults = () => {
                     </div>
                     <div className="text-right">
                       <p className="text-lg font-semibold text-white">
-                        {result.completedAt}
+                        Ishlangan vaqti: {result.completedAt}
                       </p>
                     </div>
                   </div>
